@@ -1,0 +1,46 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+
+Style/Documentation:
+  Enabled: false
+
+
+######################################
+# 学習テストのため警告をオフにしている
+######################################
+RSpec:
+  Exclude:
+    - 'spec/research/**/*'
+
+Style/MultilineBlockChain:
+  Exclude:
+    - 'spec/research/**/*'
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/ExampleLength:
+  Max: 15
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/PendingWithoutReason:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/RepeatedSubjectCall:
+  Enabled: false
+
+Spec/ExampleLength:
+  Enabled: false

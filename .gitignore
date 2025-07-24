@@ -1,0 +1,15 @@
+*.gem
+*.rbc
+/.config
+/coverage/
+/tmp/
+.env
+/.bundle/
+/vendor/bundle
+.rspec_status
+.byebug_history
+.DS_Store
+.idea/
+.vscode/
+/log/
+/data/
