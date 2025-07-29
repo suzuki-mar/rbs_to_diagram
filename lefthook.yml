@@ -1,0 +1,13 @@
+pre-push:
+  parallel: true
+  commands:
+    # 一旦Rspecは動かないのでコメントアウト
+    # rspec:
+    #   run: bundle exec rspec
+    #   fail_text: "RSpec tests failed"
+    rubocop:
+      run: bundle exec rubocop
+      fail_text: "RuboCop violations found"
+    steep:
+      run: bundle exec steep check
+      fail_text: "Steep type checking failed"

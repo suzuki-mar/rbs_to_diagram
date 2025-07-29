@@ -11,6 +11,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'lefthook', '~> 1.5'
   gem 'rspec', '~> 3.12'
   gem 'rubocop', '~> 1.78.0'
   gem 'rubocop-performance'
