@@ -1,0 +1,105 @@
+# RBS to Diagram - 型定義ファイル
+
+# 外部ライブラリの型定義
+module FileUtils
+  def self.mkdir_p: (String path) -> void
+end
+
+# メインの実行クラス
+class RBSToDiagram
+  def self.execute: (String input_file, ?String? output_file) -> void
+  def initialize: (String input_file, String? output_file) -> void
+  def execute: () -> void
+
+  private
+
+  @input_file: String
+  @output_file: String
+
+  attr_reader input_file: String
+  attr_reader output_file: String
+
+  def default_output_file_path: () -> String
+  def add_timestamp_to_filename: (String file_path) -> String
+end
+
+# RBSライブラリのラッパークラス
+class RBSParser
+  def self.parse: (String file_path) -> RBSParser::Result
+  def initialize: (String file_path) -> void
+  def parse: () -> RBSParser::Result
+
+  private
+
+  @file_path: String
+
+  attr_reader file_path: String
+
+  def validate_file_exists: () -> void
+  def load_file_content: () -> String
+
+  # RBS解析結果を集約するデータクラス
+  class Result
+    attr_reader definitions: Array[Hash[Symbol, untyped]]
+    attr_reader file_info: Hash[Symbol, untyped]
+    attr_reader parsed_at: Time
+
+    def initialize: (definitions: Array[Hash[Symbol, untyped]], file_path: String) -> void
+    def class_definitions: () -> Array[Hash[Symbol, untyped]]
+    def module_definitions: () -> Array[Hash[Symbol, untyped]]
+
+    private
+
+    def build_detailed_class_structure: (Hash[Symbol, untyped] class_def) -> Hash[Symbol, untyped]
+    def build_detailed_module_structure: (Hash[Symbol, untyped] module_def) -> Hash[Symbol, untyped]
+  end
+
+  # RBSの構文解析とデータ抽出を行うクラス
+  class SignatureAnalyzer
+    def self.analyze_content: (String content, String file_path) -> Array[untyped]
+    def self.extract_class_declarations: (Array[untyped] declarations) -> Array[Hash[Symbol, untyped]]
+    def self.extract_module_declarations: (Array[untyped] declarations) -> Array[Hash[Symbol, untyped]]
+    def self.extract_definitions: (Array[untyped] declarations) -> Array[Hash[Symbol, untyped]]
+    def self.extract_methods_from_members: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
+
+    private
+
+    def self.extract_class_definition: (untyped decl) -> Hash[Symbol, untyped]
+    def self.extract_module_definition: (untyped decl) -> Hash[Symbol, untyped]
+
+    # メソッド処理を担当する内部クラス
+    class Method
+      def self.extract_from_members: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
+      def self.extract_signature: (untyped member) -> Hash[Symbol, untyped]?
+
+      private
+
+      def self.format_attr_reader: (untyped attr_reader) -> Hash[Symbol, untyped]
+      def self.format_attr_writer: (untyped attr_writer) -> Hash[Symbol, untyped]
+      def self.format_attr_accessor: (untyped attr_accessor) -> Hash[Symbol, untyped]
+      def self.format_method_definition: (untyped method_def) -> Hash[Symbol, untyped]
+      def self.format_positional_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.format_keyword_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+    end
+  end
+end
+
+# フォーマット処理をまとめるクラス
+class Formatter
+  def self.format: (RBSParser::Result parser_result) -> String
+  def initialize: () -> void
+  def format: (RBSParser::Result parser_result) -> String
+
+  private
+
+  @json_formatter: Formatter::JSON
+
+  # JSONフォーマッター
+  class JSON
+    def format: (RBSParser::Result parser_result) -> String
+
+    private
+
+    def build_structure: (RBSParser::Result parser_result) -> Array[Hash[Symbol, untyped]]
+  end
+end

@@ -9,6 +9,23 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Metrics/MethodLength:
+  Max: 15
+  CountComments: false
+  CountAsOne:
+    - 'array'
+    - 'hash'
+
+######################################
+# 学習テストのため警告をオフにしている
+######################################
+RSpec:
+  Exclude:
+    - 'spec/research/**/*'
+
+Style/MultilineBlockChain:
+  Exclude:
+    - 'spec/research/**/*'
 
 RSpec/MultipleExpectations:
   Max: 5
@@ -33,14 +50,3 @@ RSpec/RepeatedSubjectCall:
 
 Spec/ExampleLength:
   Enabled: false
-
-######################################
-# 学習テストのため警告をオフにしている
-######################################
-RSpec:
-  Exclude:
-    - 'spec/research/**/*'
-
-Style/MultilineBlockChain:
-  Exclude:
-    - 'spec/research/**/*'  

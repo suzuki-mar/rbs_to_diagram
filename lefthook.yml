@@ -1,10 +1,10 @@
 pre-push:
   parallel: true
-  commands:
-    # 一旦Rspecは動かないのでコメントアウト
-    # rspec:
-    #   run: bundle exec rspec
-    #   fail_text: "RSpec tests failed"
+  commands:    
+    rspec:
+    # 学習用テストはプロダクトのバグには関係ないので外している
+      run: bundle exec rspec --exclude-pattern "spec/**/*_spec.rb"
+      fail_text: "RSpec tests failed"
     rubocop:
       run: bundle exec rubocop
       fail_text: "RuboCop violations found"

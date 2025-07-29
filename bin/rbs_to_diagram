@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/rbs_to_diagram'
+
+# コマンドライン引数の処理
+if ARGV.empty? || ARGV.length > 2
+  puts "Usage: #{$PROGRAM_NAME} <input_rbs_file> [output_file]"
+  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs"
+  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs output/simple_class.json"
+  exit 1
+end
+
+input_file = ARGV[0]
+output_file = ARGV[1]
+
+# ファイル存在チェック
+unless File.exist?(input_file)
+  puts "Error: Input file '#{input_file}' not found"
+  exit 1
+end
+
+begin
+  RBSToDiagram.execute(input_file, output_file)
+  final_output_file = output_file || File.join('output', "#{File.basename(input_file, '.rbs')}.json")
+  puts "Successfully generated diagram: #{final_output_file}"
+rescue StandardError => e
+  puts "Error: #{e.message}"
+  exit 1
+end
