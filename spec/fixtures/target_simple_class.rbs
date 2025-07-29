@@ -1,0 +1,3 @@
+class SimpleClass
+  def simple_method: () -> String
+end
