@@ -1,0 +1,476 @@
+{
+  "file_path": "source/method_comprehensive_class.rbs",
+  "structure": [
+    {
+      "type": "class",
+      "name": "ComprehensiveClass",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "simple_method",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "method_with_args",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_positional"
+            },
+            {
+              "name": "age",
+              "type": "Integer",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_positional"
+                },
+                {
+                  "name": "age",
+                  "type": "Integer",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "method_with_optional",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_positional"
+            },
+            {
+              "name": "age",
+              "type": "Integer",
+              "kind": "optional_positional"
+            }
+          ],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_positional"
+                },
+                {
+                  "name": "age",
+                  "type": "Integer",
+                  "kind": "optional_positional"
+                }
+              ],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "method_with_keywords",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "age",
+              "type": "Integer",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "age",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "method_with_optional_keywords",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "age",
+              "type": "Integer",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "age",
+                  "type": "Integer",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "method_with_block",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[String]",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Array[String]",
+              "block": {
+                "parameters": [
+                  {
+                    "name": "block_arg0",
+                    "type": "String"
+                  }
+                ],
+                "return_type": "void"
+              }
+            }
+          ],
+          "block": {
+            "parameters": [
+              {
+                "name": "block_arg0",
+                "type": "String",
+                "kind": "block_parameter"
+              }
+            ],
+            "return_type": "void"
+          }
+        },
+        {
+          "name": "method_with_splat",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "args",
+              "type": "String",
+              "kind": "rest_positional"
+            }
+          ],
+          "return_type": "Array[String]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "args",
+                  "type": "String",
+                  "kind": "rest_positional"
+                }
+              ],
+              "return_type": "Array[String]"
+            }
+          ]
+        },
+        {
+          "name": "method_with_rest_keywords",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "options",
+              "type": "String",
+              "kind": "rest_keyword"
+            }
+          ],
+          "return_type": "Hash[String, String]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "options",
+                  "type": "String",
+                  "kind": "rest_keyword"
+                }
+              ],
+              "return_type": "Hash[String, String]"
+            }
+          ]
+        },
+        {
+          "name": "complex_method",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_positional"
+            },
+            {
+              "name": "age",
+              "type": "Integer",
+              "kind": "optional_positional"
+            },
+            {
+              "name": "tags",
+              "type": "String",
+              "kind": "rest_positional"
+            },
+            {
+              "name": "options",
+              "type": "String",
+              "kind": "rest_keyword"
+            }
+          ],
+          "return_type": "Hash[String, untyped]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_positional"
+                },
+                {
+                  "name": "age",
+                  "type": "Integer",
+                  "kind": "optional_positional"
+                },
+                {
+                  "name": "tags",
+                  "type": "String",
+                  "kind": "rest_positional"
+                },
+                {
+                  "name": "options",
+                  "type": "String",
+                  "kind": "rest_keyword"
+                }
+              ],
+              "return_type": "Hash[String, untyped]",
+              "block": {
+                "parameters": [
+                  {
+                    "name": "block_arg0",
+                    "type": "String"
+                  }
+                ],
+                "return_type": "void"
+              }
+            }
+          ],
+          "block": {
+            "parameters": [
+              {
+                "name": "block_arg0",
+                "type": "String",
+                "kind": "block_parameter"
+              }
+            ],
+            "return_type": "void"
+          }
+        },
+        {
+          "name": "class_method",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "param",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "ComprehensiveClass",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "param",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "ComprehensiveClass"
+            }
+          ]
+        },
+        {
+          "name": "overloaded_method",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "arg0",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "arg0",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "String"
+            },
+            {
+              "parameters": [
+                {
+                  "name": "arg0",
+                  "type": "Integer",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "Integer"
+            },
+            {
+              "parameters": [],
+              "return_type": "nil"
+            }
+          ]
+        },
+        {
+          "name": "union_return",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String | Integer | nil",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "String | Integer | nil"
+            }
+          ]
+        },
+        {
+          "name": "generic_return",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "T",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "Array[T]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": "T",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "Array[T]"
+            }
+          ]
+        },
+        {
+          "name": "void_method",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "private_method",
+          "method_type": "instance",
+          "visibility": "private",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "public_method",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "String"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    }
+  ]
+}
