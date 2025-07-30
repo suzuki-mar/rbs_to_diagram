@@ -5,6 +5,78 @@ module FileUtils
   def self.mkdir_p: (String path) -> void
 end
 
+# RBS解析結果を集約するデータクラス
+class Result
+  attr_reader definitions: Array[Hash[Symbol, untyped]]
+  attr_reader file_info: Hash[Symbol, untyped]
+  attr_reader parsed_at: Time
+
+  def initialize: (definitions: Array[Hash[Symbol, untyped]], file_path: String) -> void
+  def class_definitions: () -> Array[Result::ClassNode]
+  def module_definitions: () -> Array[Hash[Symbol, untyped]]
+
+  private
+
+  def build_detailed_class_structure: (Hash[Symbol, untyped] class_def) -> Result::ClassNode
+  def create_class_node: (Hash[Symbol, untyped] class_def) -> Result::ClassNode
+  def add_methods_to_class_node: (Result::ClassNode class_node, Array[Hash[Symbol, untyped]] methods) -> void
+  def build_detailed_module_structure: (Hash[Symbol, untyped] module_def) -> Hash[Symbol, untyped]
+
+  # ベースノードクラス
+  class Node
+    attr_reader name: String
+    attr_reader type: Symbol
+    attr_reader children: Array[Result::Node]
+
+    def initialize: (name: String, type: Symbol, ?children: Array[Result::Node]) -> void
+    def add_child: (Result::Node child) -> void
+    def find_by_type: (Symbol target_type) -> Array[Result::Node]
+  end
+
+  # クラスノード
+  class ClassNode < Result::Node
+    attr_reader superclass: String?
+    attr_reader includes: Array[String]
+    attr_reader extends: Array[String]
+
+    def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
+    def methods: () -> Array[Result::MethodNode]
+  end
+
+  # メソッドノード
+  class MethodNode < Result::Node
+    attr_reader method_type: String
+    attr_reader visibility: String
+    attr_reader parameters: Array[Result::MethodNode::Parameter]
+    attr_reader return_type: String
+    attr_reader overloads: Array[Hash[Symbol, untyped]]
+    attr_reader block: Result::MethodNode::Block?
+
+    def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Result::MethodNode::Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::MethodNode::Block?) -> void
+    def self.from_hash: (Hash[Symbol, untyped] method_hash) -> Result::MethodNode
+
+    private
+
+    def self.build_parameters: (Array[Hash[Symbol, untyped]] param_hashes) -> Array[Result::MethodNode::Parameter]
+    def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::MethodNode::Block?
+
+    class Parameter
+      attr_reader name: String
+      attr_reader type: String
+      attr_reader kind: String
+
+      def initialize: (name: String, type: String, kind: String) -> void
+    end
+
+    class Block
+      attr_reader parameters: Array[Result::MethodNode::Parameter]
+      attr_reader return_type: String
+
+      def initialize: (parameters: Array[Result::MethodNode::Parameter], return_type: String) -> void
+    end
+  end
+end
+
 # メインの実行クラス
 class RBSToDiagram
   def self.execute: (String input_file, ?String? output_file) -> void
@@ -25,9 +97,9 @@ end
 
 # RBSライブラリのラッパークラス
 class RBSParser
-  def self.parse: (String file_path) -> RBSParser::Result
+  def self.parse: (String file_path) -> Result
   def initialize: (String file_path) -> void
-  def parse: () -> RBSParser::Result
+  def parse: () -> Result
 
   private
 
@@ -38,21 +110,7 @@ class RBSParser
   def validate_file_exists: () -> void
   def load_file_content: () -> String
 
-  # RBS解析結果を集約するデータクラス
-  class Result
-    attr_reader definitions: Array[Hash[Symbol, untyped]]
-    attr_reader file_info: Hash[Symbol, untyped]
-    attr_reader parsed_at: Time
 
-    def initialize: (definitions: Array[Hash[Symbol, untyped]], file_path: String) -> void
-    def class_definitions: () -> Array[Hash[Symbol, untyped]]
-    def module_definitions: () -> Array[Hash[Symbol, untyped]]
-
-    private
-
-    def build_detailed_class_structure: (Hash[Symbol, untyped] class_def) -> Hash[Symbol, untyped]
-    def build_detailed_module_structure: (Hash[Symbol, untyped] module_def) -> Hash[Symbol, untyped]
-  end
 
   # RBSの構文解析とデータ抽出を行うクラス
   class SignatureAnalyzer
@@ -70,25 +128,40 @@ class RBSParser
     # メソッド処理を担当する内部クラス
     class Method
       def self.extract_from_members: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
-      def self.extract_signature: (untyped member) -> Hash[Symbol, untyped]?
 
       private
 
-      def self.format_attr_reader: (untyped attr_reader) -> Hash[Symbol, untyped]
-      def self.format_attr_writer: (untyped attr_writer) -> Hash[Symbol, untyped]
-      def self.format_attr_accessor: (untyped attr_accessor) -> Hash[Symbol, untyped]
-      def self.format_method_definition: (untyped method_def) -> Hash[Symbol, untyped]
-      def self.format_positional_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
-      def self.format_keyword_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_signature: (untyped member, String visibility) -> Hash[Symbol, untyped]?
+      def self.format_attr_reader: (untyped attr_reader, String visibility) -> Hash[Symbol, untyped]
+      def self.format_attr_writer: (untyped attr_writer, String visibility) -> Hash[Symbol, untyped]
+      def self.format_attr_accessor: (untyped attr_accessor, String visibility) -> Hash[Symbol, untyped]
+      def self.format_method_definition: (untyped method_def, String visibility) -> Hash[Symbol, untyped]
+      def self.build_overloads: (Array[untyped] overloads) -> Array[Hash[Symbol, untyped]]
+      def self.build_method_result: (untyped method_def, String visibility, Hash[Symbol, untyped] param_info, untyped primary_method_type, Array[Hash[Symbol, untyped]] overloads) -> Hash[Symbol, untyped]
+    end
+
+    # メソッドパラメータ処理を担当するクラス
+    class MethodParameter
+      def self.extract: (untyped method_type) -> Hash[Symbol, untyped]
+
+      private
+
+      def self.extract_block_parameter: (untyped method_type) -> Hash[Symbol, untyped]?
+      def self.extract_required_positional_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_optional_positional_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_rest_positional_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_required_keyword_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_optional_keyword_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
+      def self.extract_rest_keyword_parameters: (untyped method_type) -> Array[Hash[Symbol, untyped]]
     end
   end
 end
 
 # フォーマット処理をまとめるクラス
 class Formatter
-  def self.format: (RBSParser::Result parser_result) -> String
+  def self.format: (Result parser_result) -> String
   def initialize: () -> void
-  def format: (RBSParser::Result parser_result) -> String
+  def format: (Result parser_result) -> String
 
   private
 
@@ -96,10 +169,14 @@ class Formatter
 
   # JSONフォーマッター
   class JSON
-    def format: (RBSParser::Result parser_result) -> String
+    def format: (Result parser_result) -> String
 
     private
 
-    def build_structure: (RBSParser::Result parser_result) -> Array[Hash[Symbol, untyped]]
+    def build_structure: (Result parser_result) -> Array[Hash[Symbol, untyped]]
+    def convert_class_definition_to_hash: (Result::ClassNode class_def) -> Hash[Symbol, untyped]
+    def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
+    def convert_parameter_to_hash: (Result::MethodNode::Parameter parameter) -> Hash[Symbol, untyped]
+    def convert_block_to_hash: (Result::MethodNode::Block block) -> Hash[Symbol, untyped]
   end
 end

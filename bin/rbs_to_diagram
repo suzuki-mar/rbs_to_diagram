@@ -4,27 +4,54 @@
 require_relative '../lib/rbs_to_diagram'
 
 # コマンドライン引数の処理
-if ARGV.empty? || ARGV.length > 2
-  puts "Usage: #{$PROGRAM_NAME} <input_rbs_file> [output_file]"
-  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs"
+if ARGV.length > 2
+  puts "Usage: #{$PROGRAM_NAME} [input_rbs_file] [output_file]"
+  puts "Example: #{$PROGRAM_NAME}                              # Process all files in source/"
+  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs      # Process single file"
   puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs output/simple_class.json"
   exit 1
 end
 
-input_file = ARGV[0]
-output_file = ARGV[1]
+if ARGV.empty?
+  # sourceディレクトリの全RBSファイルを処理
+  source_dir = 'source'
+  unless Dir.exist?(source_dir)
+    puts "Error: Source directory '#{source_dir}' not found"
+    exit 1
+  end
 
-# ファイル存在チェック
-unless File.exist?(input_file)
-  puts "Error: Input file '#{input_file}' not found"
-  exit 1
-end
+  rbs_files = Dir.glob(File.join(source_dir, '*.rbs'))
+  if rbs_files.empty?
+    puts "Error: No RBS files found in '#{source_dir}' directory"
+    exit 1
+  end
 
-begin
-  RBSToDiagram.execute(input_file, output_file)
-  final_output_file = output_file || File.join('output', "#{File.basename(input_file, '.rbs')}.json")
-  puts "Successfully generated diagram: #{final_output_file}"
-rescue StandardError => e
-  puts "Error: #{e.message}"
-  exit 1
+  puts "Processing #{rbs_files.length} RBS files from #{source_dir}/"
+
+  rbs_files.each do |input_file|
+    RBSToDiagram.execute(input_file, nil)
+    output_file = File.join('output', "#{File.basename(input_file, '.rbs')}.json")
+    puts "✓ Generated: #{output_file}"
+  rescue StandardError => e
+    puts "✗ Error processing #{input_file}: #{e.message}"
+  end
+else
+  # 単一ファイルを処理（従来の動作）
+  input_file = ARGV[0]
+  output_file = ARGV[1]
+
+  # ファイル存在チェック
+  unless File.exist?(input_file)
+    puts "Error: Input file '#{input_file}' not found"
+    exit 1
+  end
+
+  begin
+    RBSToDiagram.execute(input_file, output_file)
+    final_output_file = output_file || File.join('output', "#{File.basename(input_file, '.rbs')}.json")
+    puts "Successfully generated diagram: #{final_output_file}"
+  rescue StandardError => e
+    puts "Error: #{e.message}"
+    exit 1
+  end
 end

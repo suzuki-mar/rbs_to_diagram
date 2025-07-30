@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'rbs_parser/signature_analyzer'
-require_relative 'rbs_parser/result'
+require_relative 'result'
 
 class RBSParser
   def self.parse(file_path)
