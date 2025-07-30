@@ -1,0 +1,53 @@
+class ComprehensiveClass
+  # インスタンスメソッド - 引数なし
+  def simple_method: () -> String
+  
+  # インスタンスメソッド - 位置引数
+  def method_with_args: (String name, Integer age) -> String
+  
+  # インスタンスメソッド - オプション引数
+  def method_with_optional: (String name, ?Integer age) -> String
+  
+  # インスタンスメソッド - キーワード引数
+  def method_with_keywords: (name: String, age: Integer) -> String
+  
+  # インスタンスメソッド - オプションキーワード引数
+  def method_with_optional_keywords: (name: String, ?age: Integer) -> String
+  
+  # インスタンスメソッド - ブロック引数
+  def method_with_block: () { (String) -> void } -> Array[String]
+  
+  # インスタンスメソッド - 可変長引数
+  def method_with_splat: (*String args) -> Array[String]
+  
+  # インスタンスメソッド - 可変長キーワード引数
+  def method_with_rest_keywords: (**String options) -> Hash[String, String]
+  
+  # インスタンスメソッド - 複合引数
+  def complex_method: (String name, ?Integer age, *String tags, **String options) { (String) -> void } -> Hash[String, untyped]
+  
+  # クラスメソッド
+  def self.class_method: (String param) -> ComprehensiveClass
+  
+  # オーバーロードメソッド
+  def overloaded_method: (String) -> String
+                       | (Integer) -> Integer
+                       | () -> nil
+  
+  # Union型戻り値
+  def union_return: () -> (String | Integer | nil)
+  
+  # Generic型戻り値
+  def generic_return: [T] (T value) -> Array[T]
+  
+  # void戻り値
+  def void_method: (String message) -> void
+  
+  private
+  
+  def private_method: () -> String
+  
+  public
+  
+  def public_method: () -> String
+end
