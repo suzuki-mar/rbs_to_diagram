@@ -3,7 +3,7 @@ pre-push:
   commands:    
     rspec:
     # 学習用テストはプロダクトのバグには関係ないので外している
-      run: bundle exec rspec --exclude-pattern "spec/**/*_spec.rb"
+      run: bundle exec rspec  --exclude-pattern "spec/research/*_spec.rb" 
       fail_text: "RSpec tests failed"
     rubocop:
       run: bundle exec rubocop

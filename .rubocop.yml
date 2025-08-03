@@ -47,6 +47,3 @@ RSpec/NamedSubject:
 
 RSpec/RepeatedSubjectCall:
   Enabled: false
-
-Spec/ExampleLength:
-  Enabled: false
