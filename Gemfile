@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '3.2.0'
+ruby '3.2.8'
 
 gem 'rbs', '~> 3.9.0'
 
