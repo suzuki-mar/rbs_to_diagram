@@ -1,0 +1,158 @@
+# RBS to Diagram - 型定義ファイル
+
+# 内部データ構造のクラス
+class Parameter
+  attr_reader name: String
+  attr_reader type: String
+  attr_reader kind: String
+
+  def initialize: (name: String, type: String, kind: String) -> void
+  def self.from_hash: (Hash[Symbol, String] hash) -> Parameter
+  def to_hash: () -> Hash[Symbol, String]
+end
+
+
+
+# RBS解析結果を集約するデータクラス
+class Result
+  type definition_hash = {
+    type: Symbol,
+    name: String,
+    methods: Array[Hash[Symbol, untyped]],
+    superclass: String?,
+    includes: Array[String],
+    extends: Array[String]
+  }
+
+  type file_info_hash = {
+    file_path: String
+  }
+
+  attr_reader definitions: Array[definition_hash]
+  attr_reader file_info: Hash[Symbol, String]
+  attr_reader parsed_at: Time
+
+  def initialize: (definitions: Array[definition_hash], file_path: String) -> void
+  def class_definitions: () -> Array[Result::ClassNode]
+  def module_definitions: () -> Array[definition_hash]
+
+  private
+
+  def build_detailed_class_structure: (definition_hash class_def) -> Result::ClassNode
+  def create_class_node: (definition_hash class_def) -> Result::ClassNode
+  def add_methods_to_class_node: (Result::ClassNode class_node, Array[Hash[Symbol, untyped]] methods) -> void
+  def build_detailed_module_structure: (definition_hash module_def) -> definition_hash
+
+  # ベースノードクラス
+  class Node
+    attr_reader name: String
+    attr_reader type: Symbol
+    attr_reader children: Array[Result::Node]
+
+    def initialize: (name: String, type: Symbol, ?children: Array[Result::Node]) -> void
+    def add_child: (Result::Node child) -> void
+    def find_by_type: (Symbol target_type) -> Array[Result::Node]
+  end
+
+  # クラスノード
+  class ClassNode < Result::Node
+    attr_reader superclass: String?
+    attr_reader includes: Array[String]
+    attr_reader extends: Array[String]
+
+    %a{override}
+    def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
+    def methods: () -> Array[Result::MethodNode]
+  end
+
+  # メソッドノード
+  class MethodNode < Result::Node
+    attr_reader method_type: String
+    attr_reader visibility: String
+    attr_reader parameters: Array[Parameter]
+    attr_reader return_type: String
+    attr_reader overloads: Array[Hash[Symbol, untyped]]
+    attr_reader block: Result::MethodNode::Block?
+
+    %a{override}
+    def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::MethodNode::Block?) -> void
+    def self.from_hash: (Hash[Symbol, untyped] method_hash) -> Result::MethodNode
+
+    private
+
+    def self.build_parameters: (Array[Parameter | Hash[Symbol, String]] param_objects) -> Array[Parameter]
+    def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::MethodNode::Block?
+
+    class Block
+      attr_reader parameters: Array[Parameter]
+      attr_reader return_type: String
+
+      def initialize: (parameters: Array[Parameter], return_type: String) -> void
+    end
+  end
+end
+
+class RBSToDiagram
+  def self.execute: (String input_file, ?String? output_file) -> void
+  def initialize: (String input_file, String? output_file) -> void
+  def execute: () -> void
+
+  private
+
+  @input_file: String
+  @output_file: String
+
+  attr_reader input_file: String
+  attr_reader output_file: String
+
+  def default_output_file_path: () -> String
+  def add_timestamp_to_filename: (String file_path) -> String
+end
+
+
+
+class Formatter
+  def self.format: (Result parser_result) -> String
+  def initialize: () -> void
+  def format: (Result parser_result) -> String
+
+  private
+
+  @json_formatter: Formatter::JSON
+
+  class JSON
+    type json_block_hash = {
+      parameters: Array[Hash[Symbol, String]],
+      return_type: String
+    }
+
+    type json_method_hash = {
+      name: String,
+      method_type: String,
+      visibility: String,
+      parameters: Array[Hash[Symbol, String]],
+      return_type: String,
+      overloads: Array[Hash[Symbol, untyped]],
+      block: json_block_hash?
+    }
+
+    type json_class_hash = {
+      type: Symbol,
+      name: String,
+      superclass: String?,
+      methods: Array[json_method_hash],
+      includes: Array[String],
+      extends: Array[String]
+    }
+
+    def format: (Result parser_result) -> String
+
+    private
+
+    def build_structure: (Result parser_result) -> Array[Hash[Symbol, untyped]]
+    def convert_class_definition_to_hash: (Result::ClassNode class_def) -> Hash[Symbol, untyped]
+    def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
+    def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
+    def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
+  end
+end
