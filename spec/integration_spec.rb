@@ -13,6 +13,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
         'spec/fixtures/target_simple_class.rbs',
         'spec/output/target_simple_class.json',
         'spec/fixtures/compare_simple_class.json'
+      ],
+      [
+        'spec/fixtures/target_method_comprehensive_class.rbs',
+        'spec/output/target_method_comprehensive_class.json',
+        'spec/fixtures/compare_method_comprehensive_class.json'
       ]
     ]
   end

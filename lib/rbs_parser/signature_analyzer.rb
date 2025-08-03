@@ -36,7 +36,7 @@ class RBSParser
     end
 
     def self.extract_definitions(declarations)
-      definitions = [] # : Array[Hash[Symbol, untyped]]
+      definitions = [] # : Array[Result::definition_hash]
 
       declarations.each do |decl|
         case decl
@@ -59,7 +59,10 @@ class RBSParser
       {
         type: :class,
         name: decl.name.to_s,
-        methods: methods
+        methods: methods,
+        superclass: nil, # TODO: 継承関係の実装
+        includes: [], # TODO: includeの実装
+        extends: [] # TODO: extendの実装
       }
     end
 
@@ -68,7 +71,10 @@ class RBSParser
       {
         type: :module,
         name: decl.name.to_s,
-        methods: methods
+        methods: methods,
+        superclass: nil,
+        includes: [], # TODO: includeの実装
+        extends: [] # TODO: extendの実装
       }
     end
   end
