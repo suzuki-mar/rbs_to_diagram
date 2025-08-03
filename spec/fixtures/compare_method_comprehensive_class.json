@@ -173,7 +173,8 @@
                 "parameters": [
                   {
                     "name": "block_arg0",
-                    "type": "String"
+                    "type": "String",
+                    "kind": "block_parameter"
                   }
                 ],
                 "return_type": "void"
@@ -267,7 +268,7 @@
               "kind": "rest_keyword"
             }
           ],
-          "return_type": "Hash[String, untyped]",
+          "return_type": "Hash[String, String]",
           "overloads": [
             {
               "parameters": [
@@ -292,12 +293,13 @@
                   "kind": "rest_keyword"
                 }
               ],
-              "return_type": "Hash[String, untyped]",
+              "return_type": "Hash[String, String]",
               "block": {
                 "parameters": [
                   {
                     "name": "block_arg0",
-                    "type": "String"
+                    "type": "String",
+                    "kind": "block_parameter"
                   }
                 ],
                 "return_type": "void"
