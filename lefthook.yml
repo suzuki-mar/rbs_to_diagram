@@ -7,9 +7,7 @@ pre-push:
       fail_text: "RSpec tests failed"
     rubocop:
       run: bundle exec rubocop
-      fail_text: "RuboCop violations found"
-    error_print:
-      run: echo "⚠️  Steep無効中 - 特別な事情により一時的に無効化されています"
-    # steep: # Steep無効中 - 特別な事情により一時的に無効化
-    #   run: bundle exec steep check
-    #   fail_text: "Steep type checking failed"
+      fail_text: "RuboCop violations found"    
+    steep:
+      run: bundle exec steep check
+      fail_text: "Steep type checking failed"

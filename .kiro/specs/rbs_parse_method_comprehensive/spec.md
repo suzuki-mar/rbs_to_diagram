@@ -27,7 +27,7 @@ class ComprehensiveClass
   def method_with_splat: (*String args) -> Array[String]
   
   # インスタンスメソッド - 複合引数
-  def complex_method: (String name, ?Integer age, *String tags, **String options) { (String) -> void } -> Hash[String, untyped]
+  def complex_method: (String name, ?Integer age, *String tags, **String options) { (String) -> void } -> Hash[String, String]
   
   # クラスメソッド
   def self.class_method: (String param) -> ComprehensiveClass
