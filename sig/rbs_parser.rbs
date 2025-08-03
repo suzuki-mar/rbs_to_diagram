@@ -1,0 +1,77 @@
+# RBSParser - RBS解析関連の型定義
+
+# RBSライブラリのラッパークラス
+class RBSParser
+  def self.parse: (String file_path) -> Result
+  def initialize: (String file_path) -> void
+  def parse: () -> Result
+
+  private
+
+  @file_path: String
+
+  attr_reader file_path: String
+
+  def validate_file_exists: () -> void
+  def load_file_content: () -> String
+
+  # RBSの構文解析とデータ抽出を行うクラス
+  class SignatureAnalyzer
+    type method_hash = {
+      name: String,
+      method_type: String,
+      visibility: String,
+      parameters: Array[Hash[Symbol, String]],
+      return_type: String,
+      overloads: Array[Hash[Symbol, untyped]],
+      block: Hash[Symbol, untyped]?
+    }
+
+    def self.analyze_content: (String content, String file_path) -> Array[RBS::AST::Declarations::t]
+    def self.extract_class_declarations: (Array[RBS::AST::Declarations::t] declarations) -> Array[Hash[Symbol, (Symbol | String | Array[untyped])]]
+    def self.extract_module_declarations: (Array[RBS::AST::Declarations::t] declarations) -> Array[Hash[Symbol, (Symbol | String | Array[untyped])]]
+    def self.extract_definitions: (Array[RBS::AST::Declarations::t] declarations) -> Array[Result::definition_hash]
+    def self.extract_methods_from_members: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
+
+    private
+
+    def self.extract_class_definition: (RBS::AST::Declarations::Class decl) -> Result::definition_hash
+    def self.extract_module_definition: (RBS::AST::Declarations::Module decl) -> Result::definition_hash
+
+    # メソッド処理を担当する内部クラス
+    class Method
+      def self.extract_from_members: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
+
+      private
+
+      def self.extract_signature: (untyped member, String visibility) -> Hash[Symbol, untyped]?
+      def self.format_attribute: (untyped attr, String visibility, Symbol attr_type) -> Hash[Symbol, untyped]
+      def self.format_method_definition: (untyped method_def, String visibility) -> Hash[Symbol, untyped]
+      def self.build_overloads: (Array[untyped] overloads) -> Array[Hash[Symbol, untyped]]
+      def self.build_overload_item: (Hash[Symbol, untyped] overload_param_info, untyped overload_method_type) -> Hash[Symbol, untyped]
+      def self.build_method_result: (untyped method_def, String visibility, Hash[Symbol, untyped] param_info, untyped primary_method_type, Array[Hash[Symbol, untyped]] overloads) -> Hash[Symbol, untyped]
+    end
+
+    # メソッドパラメータ処理を担当するクラス
+    class MethodParameter
+      type parameter_info_hash = {
+        parameters: Array[Parameter],
+        block: Hash[Symbol, untyped]?
+      }
+
+      def self.extract: (RBS::MethodType method_type) -> Hash[Symbol, untyped]
+
+      private
+
+      def self.extract_block_parameter: (RBS::MethodType method_type) -> Hash[Symbol, untyped]?
+      def self.build_block_parameters: (untyped block) -> Array[Parameter]
+      def self.extract_required_positional_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.extract_optional_positional_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.extract_rest_positional_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.extract_required_keyword_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.extract_optional_keyword_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.extract_rest_keyword_parameters: (RBS::MethodType method_type) -> Array[Parameter]
+      def self.build_parameter_hash: (untyped name, untyped type, String kind, ?untyped default_name) -> Parameter
+    end
+  end
+end

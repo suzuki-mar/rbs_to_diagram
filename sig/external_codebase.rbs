@@ -1,0 +1,6 @@
+# 外部コードベースの型定義
+
+# 標準ライブラリ
+module FileUtils
+  def self.mkdir_p: (String path) -> void
+end
