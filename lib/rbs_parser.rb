@@ -20,10 +20,7 @@ class RBSParser
     declarations = RBSParser::SignatureAnalyzer.analyze_content(content, file_path)
     definitions = RBSParser::SignatureAnalyzer.extract_definitions(declarations)
 
-    Result.new(
-      definitions: definitions,
-      file_path: file_path
-    )
+    Result.new(definitions: definitions)
   end
 
   private

@@ -3,7 +3,6 @@
 require_relative 'node'
 
 class Result
-  # クラスを表すノード
   class ClassNode < Node
     attr_reader :superclass, :includes, :extends
 
@@ -15,11 +14,32 @@ class Result
     end
 
     def methods
+      extract_method_nodes
+    end
+
+    def methods_ordered_by_visibility_and_type
+      all_methods = methods
+
+      [
+        select_methods_by_visibility_and_type(all_methods, 'public', 'class'),
+        select_methods_by_visibility_and_type(all_methods, 'public', 'instance'),
+        select_methods_by_visibility_and_type(all_methods, 'private', 'class'),
+        select_methods_by_visibility_and_type(all_methods, 'private', 'instance')
+      ].flatten
+    end
+
+    private
+
+    def extract_method_nodes
       result = [] # : Array[Result::MethodNode]
       @children.each do |child|
         result << child if child.is_a?(MethodNode)
       end
       result
+    end
+
+    def select_methods_by_visibility_and_type(methods, visibility, method_type)
+      methods.select { |m| m.visibility == visibility && m.method_type == method_type }
     end
   end
 end

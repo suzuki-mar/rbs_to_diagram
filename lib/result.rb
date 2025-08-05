@@ -5,11 +5,10 @@ require_relative 'result/class_node'
 require_relative 'result/method_node'
 
 class Result
-  attr_reader :definitions, :file_info, :parsed_at
+  attr_reader :definitions, :parsed_at
 
-  def initialize(definitions:, file_path:)
+  def initialize(definitions:)
     @definitions = definitions
-    @file_info = { file_path: file_path }
     @parsed_at = Time.now
   end
 
