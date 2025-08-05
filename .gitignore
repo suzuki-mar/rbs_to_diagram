@@ -13,3 +13,7 @@
 .vscode/
 /log/
 /data/
+
+# Output files (keep only .keep file)
+/output/*
+!/output/.keep
