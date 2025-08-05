@@ -24,15 +24,10 @@ class Result
     extends: Array[String]
   }
 
-  type file_info_hash = {
-    file_path: String
-  }
-
   attr_reader definitions: Array[definition_hash]
-  attr_reader file_info: Hash[Symbol, String]
   attr_reader parsed_at: Time
 
-  def initialize: (definitions: Array[definition_hash], file_path: String) -> void
+  def initialize: (definitions: Array[definition_hash]) -> void
   def class_definitions: () -> Array[Result::ClassNode]
   def module_definitions: () -> Array[definition_hash]
 
@@ -64,6 +59,11 @@ class Result
     def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
     def methods: () -> Array[Result::MethodNode]
     def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
+
+    private
+
+    def extract_method_nodes: () -> Array[Result::MethodNode]
+    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
   end
 
   # メソッドノード

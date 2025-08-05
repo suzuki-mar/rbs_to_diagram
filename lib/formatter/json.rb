@@ -10,7 +10,6 @@ class Formatter
       structure = build_structure(parser_result)
 
       ::JSON.pretty_generate({
-                               file_path: parser_result.file_info[:file_path],
                                structure: structure
                              })
     end
