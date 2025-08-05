@@ -16,6 +16,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
       ],
       [
         'spec/fixtures/target_method_comprehensive_class.rbs',
+        'spec/output/target_method_comprehensive_class.mermaid',
+        'spec/fixtures/compare_method_comprehensive_class.mermaid'
+      ],
+      [
+        'spec/fixtures/target_method_comprehensive_class.rbs',
         'spec/output/target_method_comprehensive_class.json',
         'spec/fixtures/compare_method_comprehensive_class.json'
       ]
@@ -30,7 +35,8 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
     let(:expected_output_file) do
       base_name = File.basename(target_file, '.rbs')
       timestamp = parsed_time.strftime('%Y%m%d%H%M')
-      File.join('spec/output', "#{base_name}_#{timestamp}.json")
+      extension = File.extname(output_file)
+      File.join('spec/output', "#{base_name}_#{timestamp}#{extension}")
     end
 
     before do
