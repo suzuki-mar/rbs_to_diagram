@@ -63,6 +63,7 @@ class Result
     %a{override}
     def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
     def methods: () -> Array[Result::MethodNode]
+    def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
   end
 
   # メソッドノード
@@ -154,5 +155,20 @@ class Formatter
     def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
     def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
     def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
+  end
+
+  class MermaidJS
+    def format: (Result parser_result) -> String
+
+    private
+
+    def build_class_diagrams: (Result parser_result) -> Array[Array[String]]
+    def convert_class_to_mermaid: (Result::ClassNode class_def) -> Array[String]
+    def convert_method_to_mermaid: (Result::MethodNode method) -> String
+    def format_visibility: (String visibility) -> String
+    def format_method_type: (String method_type) -> String
+    def format_method_parameters: (Result::MethodNode method) -> String
+    def format_param: (Parameter param) -> String?
+    def format_block_signature: (Result::MethodNode::Block? block) -> String
   end
 end
