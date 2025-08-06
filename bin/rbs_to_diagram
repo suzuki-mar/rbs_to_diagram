@@ -48,11 +48,11 @@ class CLI
   end
 
   def run_demo
-    CLIHelper.validate_demo_file
-    puts CLIHelper.demo_header
+    rbs_files = CLIHelper.validate_demo_directory
+    puts CLIHelper.demo_header(rbs_files.length)
     puts CLIHelper.demo_generation
 
-    result = RBSToDiagram.execute(CLIHelper::DEMO_INPUT_FILE, 'output/demo.mermaid')
+    result = RBSToDiagram.execute(CLIHelper::DEMO_INPUT_DIR, 'output/demo.mermaid')
     puts CLIHelper.generation_success(result[:output_file])
     puts CLIHelper.mermaid_viewer_info(result)
     puts CLIHelper.demo_completion(result[:output_file])
