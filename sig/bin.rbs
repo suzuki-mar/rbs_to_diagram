@@ -1,0 +1,34 @@
+# bin ディレクトリのクラス型定義
+
+class CLIHelper
+  DEMO_INPUT_FILE: String
+  SOURCE_DIR: String
+
+  def self.validate_demo_file: () -> void
+  def self.validate_source_directory: () -> Array[String]
+  def self.validate_input_file: (String input_file) -> void
+  def self.demo_header: () -> String
+  def self.demo_generation: () -> String
+  def self.demo_completion: (String output_file) -> String
+  def self.source_processing: (Integer file_count) -> String
+  def self.generation_success: (String output_file) -> String
+  def self.generation_error: (String input_file, String error_message) -> String
+  def self.single_file_success: (String output_file) -> String
+  def self.mermaid_viewer_info: (Hash[Symbol, untyped] result) -> String
+  def self.create_help_text: (String program_name) -> String
+end
+
+class CLI
+  def initialize: () -> void
+  def run: (Array[String] args) -> void
+
+  private
+
+  @options: Hash[Symbol, untyped]
+  @parser: OptionParser
+
+  def create_option_parser: () -> OptionParser
+  def run_demo: () -> void
+  def process_source_directory: () -> void
+  def process_single_file: (String input_file, String? output_file) -> void
+end
