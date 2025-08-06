@@ -1,0 +1,22 @@
+classDiagram
+    class BaseEntity {
+        +id() Integer
+        +initialize(id: Integer) void
+    }
+    class User {
+        +name() String
+        +settings() UserSettings
+        +initialize(id: Integer, name: String) void
+    }
+    class UserSettings {
+        +theme() String
+        +initialize(theme: String) void
+    }
+    class Logger {
+        +level() String
+        +initialize(level: String) void
+    }
+
+    %% 関係性の定義
+    BaseEntity <|-- User : "継承"
+    User --> UserSettings : "委譲"
