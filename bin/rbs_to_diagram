@@ -52,7 +52,7 @@ class CLI
     puts CLIHelper.demo_header
     puts CLIHelper.demo_generation
 
-    result = RBSToDiagram.execute(CLIHelper::DEMO_INPUT_FILE, 'output/comprehensive_class.mermaid')
+    result = RBSToDiagram.execute(CLIHelper::DEMO_INPUT_FILE, 'output/demo.mermaid')
     puts CLIHelper.generation_success(result[:output_file])
     puts CLIHelper.mermaid_viewer_info(result)
     puts CLIHelper.demo_completion(result[:output_file])

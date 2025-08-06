@@ -1,0 +1,63 @@
+# 基本となるクラス
+class BaseEntity
+  attr_reader id: Integer
+  
+  def initialize: (id: Integer) -> void
+  def simple_method: () -> String
+end
+
+# 継承クラス（複雑なメソッドを含む）
+class User < BaseEntity
+  attr_reader name: String
+  attr_reader settings: UserSettings
+  
+  def initialize: (id: Integer, name: String) -> void
+  
+  # 複雑なメソッドの例
+  def method_with_args: (String name, Integer age) -> String
+  def method_with_optional: (String name, ?Integer age) -> String
+  def method_with_keywords: (name: String, age: Integer) -> String
+  def method_with_optional_keywords: (name: String, ?age: Integer) -> String
+  def method_with_block: () { (String) -> void } -> Array[String]
+  def method_with_splat: (*String args) -> Array[String]
+  def method_with_rest_keywords: (**String options) -> Hash[String, String]
+  def complex_method: (
+    String name,
+    ?Integer age,
+    *String tags,
+    **String options) { (String) -> void } -> Hash[String, String]
+
+  def self.create_user: (String param) -> User
+  def overloaded_method: (String) -> String
+                       | (Integer) -> Integer
+                       | () -> nil
+  def union_return: () -> (String | Integer | nil)
+  def generic_return: [T] (T value) -> Array[T]
+  def void_method: (String message) -> void
+
+  private
+  def private_method: () -> String
+
+  public
+  def public_method: () -> String
+end
+
+# 委譲先のクラス
+class UserSettings
+  attr_reader theme: String
+  attr_reader preferences: Hash[String, String]
+  
+  def initialize: (theme: String) -> void
+  def update_theme: (String new_theme) -> void
+  def get_preference: (String key) -> String?
+end
+
+# 関係しないクラス
+class Logger
+  attr_reader level: String
+  
+  def initialize: (level: String) -> void
+  def log: (String message) -> void
+  def debug: (String message) -> void
+  def error: (String message) -> void
+end

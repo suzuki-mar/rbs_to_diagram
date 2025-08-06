@@ -3,7 +3,7 @@
 require_relative '../lib/rbs_to_diagram'
 
 class CLIHelper
-  DEMO_INPUT_FILE = 'spec/fixtures/target_method_comprehensive_class.rbs'
+  DEMO_INPUT_FILE = 'source/demo.rbs'
   SOURCE_DIR = 'source'
 
   def self.validate_demo_file
