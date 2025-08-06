@@ -5,21 +5,22 @@ require_relative 'rbs_parser'
 require_relative 'formatter'
 
 class RBSToDiagram
-  def self.execute(input_file, output_file = nil)
-    new(input_file, output_file).execute
+  def self.execute(input_paths, output_file = nil)
+    new(input_paths, output_file).execute
   end
 
   private_class_method :new
 
-  def initialize(input_file, output_file)
-    @input_file = input_file
+  def initialize(input_paths, output_file)
+    @input_paths = input_paths.is_a?(Array) ? input_paths : [input_paths]
     @output_file = add_timestamp_to_filename(output_file || default_output_file_path)
   end
 
   def execute
     FileUtils.mkdir_p(File.dirname(output_file))
 
-    parser_result = RBSParser.parse(input_file)
+    rbs_files = collect_rbs_files(input_paths)
+    parser_result = RBSParser.parse(rbs_files)
     format_type = determine_format_type(output_file)
     output = Formatter.format(parser_result, format_type)
 
@@ -30,10 +31,24 @@ class RBSToDiagram
 
   private
 
-  attr_reader :input_file, :output_file
+  attr_reader :input_paths, :output_file
+
+  def collect_rbs_files(paths)
+    rbs_files = [] # : Array[String]
+
+    paths.each do |path|
+      if File.directory?(path)
+        rbs_files.concat(Dir.glob(File.join(path, '**', '*.rbs')))
+      elsif File.file?(path) && path.end_with?('.rbs')
+        rbs_files << path
+      end
+    end
+
+    rbs_files.uniq
+  end
 
   def default_output_file_path
-    base_name = File.basename(input_file, '.rbs')
+    base_name = input_paths.size == 1 ? File.basename(input_paths.first, '.rbs') : 'multiple_classes'
     File.join('output', "#{base_name}.json")
   end
 
