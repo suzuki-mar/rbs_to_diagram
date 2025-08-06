@@ -34,7 +34,11 @@ class RBSParser
   attr_reader :file_paths
 
   def validate_file_exists?(file_path)
-    File.exist?(file_path)
+    unless File.exist?(file_path)
+      warn "File not found: #{file_path}"
+      return false
+    end
+    true
   end
 
   def load_file_content(file_path)

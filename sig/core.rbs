@@ -30,12 +30,15 @@ class Result
   def initialize: (definitions: Array[definition_hash]) -> void
   def class_definitions: () -> Array[Result::ClassNode]
   def module_definitions: () -> Array[definition_hash]
+  def find_relationships: () -> Array[Result::RelationshipNode]
 
   private
 
   def build_detailed_class_structure: (definition_hash class_def) -> Result::ClassNode
-  def create_class_node: (definition_hash class_def) -> Result::ClassNode
   def add_methods_to_class_node: (Result::ClassNode class_node, Array[Hash[Symbol, untyped]] methods) -> void
+  def add_inheritance_relationship: (Result::ClassNode class_node) -> void
+  def add_delegation_relationships: (Result::ClassNode class_node) -> void
+  def builtin_class?: (String type_name) -> bool
   def build_detailed_module_structure: (definition_hash module_def) -> definition_hash
 
   # ベースノードクラス
@@ -57,13 +60,29 @@ class Result
 
     %a{override}
     def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
+    def self.from_hash: (definition_hash class_def) -> Result::ClassNode
     def methods: () -> Array[Result::MethodNode]
+    def relationships: () -> Array[Result::RelationshipNode]
+    def add_relationship: (Result::RelationshipNode relationship_node) -> void
     def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
 
     private
 
     def extract_method_nodes: () -> Array[Result::MethodNode]
+    def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
     def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
+  end
+
+  # 関係性ノード
+  class RelationshipNode < Result::Node
+    attr_reader relationship_type: Symbol
+    attr_reader from: String
+    attr_reader to: String
+
+    %a{override}
+    def initialize: (name: String, relationship_type: Symbol, from: String, to: String) -> void
+    def inheritance?: () -> bool
+    def delegation?: () -> bool
   end
 
   # メソッドノード
@@ -100,86 +119,20 @@ class RBSToDiagram
     content: String
   }
 
-  def self.execute: (String input_file, ?String? output_file) -> execute_result
-  def initialize: (String input_file, String? output_file) -> void
+  def self.execute: (Array[String] | String input_paths, ?String? output_file) -> execute_result
+  def initialize: (Array[String] | String input_paths, String? output_file) -> void
   def execute: () -> execute_result
 
   private
 
-  @input_file: String
+  @input_paths: Array[String]
   @output_file: String
 
-  attr_reader input_file: String
+  attr_reader input_paths: Array[String]
   attr_reader output_file: String
 
+  def collect_rbs_files: (Array[String] paths) -> Array[String]
   def default_output_file_path: () -> String
   def add_timestamp_to_filename: (String file_path) -> String
   def determine_format_type: (String file_path) -> Symbol
-end
-
-
-
-class Formatter
-  def self.format: (Result parser_result, ?Symbol format_type) -> String
-  def initialize: () -> void
-  def format: (Result parser_result, ?Symbol format_type) -> String
-
-  private
-
-  @json_formatter: Formatter::JSON
-  @mermaidjs_formatter: Formatter::MermaidJS
-
-  attr_reader json_formatter: Formatter::JSON
-  attr_reader mermaidjs_formatter: Formatter::MermaidJS
-
-  class JSON
-    type json_block_hash = {
-      parameters: Array[Hash[Symbol, String]],
-      return_type: String
-    }
-
-    type json_method_hash = {
-      name: String,
-      method_type: String,
-      visibility: String,
-      parameters: Array[Hash[Symbol, String]],
-      return_type: String,
-      overloads: Array[Hash[Symbol, untyped]],
-      block: json_block_hash?
-    }
-
-    type json_class_hash = {
-      type: Symbol,
-      name: String,
-      superclass: String?,
-      methods: Array[json_method_hash],
-      includes: Array[String],
-      extends: Array[String]
-    }
-
-    def format: (Result parser_result) -> String
-
-    private
-
-    def build_structure: (Result parser_result) -> Array[Hash[Symbol, untyped]]
-    def convert_class_definition_to_hash: (Result::ClassNode class_def) -> Hash[Symbol, untyped]
-    def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
-    def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
-    def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
-  end
-
-  class MermaidJS
-    def format: (Result parser_result) -> String
-
-    private
-
-    def build_class_diagrams: (Result parser_result) -> Array[Array[String]]
-    def convert_class_to_mermaid: (Result::ClassNode class_def) -> Array[String]
-    def convert_method_to_mermaid: (Result::MethodNode method) -> String
-    def format_visibility: (String visibility) -> String
-    def format_method_type: (String method_type) -> String
-    def format_method_parameters: (Result::MethodNode method) -> String
-    def format_param: (Parameter param) -> String?
-    def format_block_signature: (Result::MethodNode::Block? block) -> String
-  end
 end

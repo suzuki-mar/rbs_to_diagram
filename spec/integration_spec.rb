@@ -9,11 +9,7 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
 
   where(:target_file, :output_file, :compare_file) do
     [
-      [
-        'spec/fixtures/target_simple_class.rbs',
-        'spec/output/target_simple_class.json',
-        'spec/fixtures/compare_simple_class.json'
-      ],
+
       [
         'spec/fixtures/target_method_comprehensive_class.rbs',
         'spec/output/target_method_comprehensive_class.mermaid',
@@ -23,6 +19,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
         'spec/fixtures/target_method_comprehensive_class.rbs',
         'spec/output/target_method_comprehensive_class.json',
         'spec/fixtures/compare_method_comprehensive_class.json'
+      ],
+      [
+        'spec/fixtures/target_related_classes.rbs',
+        'spec/output/target_related_classes.mermaid',
+        'spec/fixtures/compare_related_classes.mermaid'
       ]
     ]
   end
