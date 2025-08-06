@@ -60,9 +60,9 @@ class RBSParser
         type: :class,
         name: decl.name.to_s,
         methods: methods,
-        superclass: nil, # TODO: 継承関係の実装
-        includes: [], # TODO: includeの実装
-        extends: [] # TODO: extendの実装
+        superclass: decl.super_class&.name&.to_s,
+        includes: extract_includes_from_members(decl.members),
+        extends: extract_extends_from_members(decl.members)
       }
     end
 
@@ -73,9 +73,25 @@ class RBSParser
         name: decl.name.to_s,
         methods: methods,
         superclass: nil,
-        includes: [], # TODO: includeの実装
-        extends: [] # TODO: extendの実装
+        includes: extract_includes_from_members(decl.members),
+        extends: extract_extends_from_members(decl.members)
       }
+    end
+
+    private_class_method def self.extract_includes_from_members(members)
+      members.filter_map do |member|
+        next unless member.is_a?(RBS::AST::Members::Include)
+
+        member.name.to_s
+      end
+    end
+
+    private_class_method def self.extract_extends_from_members(members)
+      members.filter_map do |member|
+        next unless member.is_a?(RBS::AST::Members::Extend)
+
+        member.name.to_s
+      end
     end
   end
 end

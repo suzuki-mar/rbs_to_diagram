@@ -2,18 +2,18 @@
 
 # RBSライブラリのラッパークラス
 class RBSParser
-  def self.parse: (String file_path) -> Result
-  def initialize: (String file_path) -> void
+  def self.parse: (Array[String] | String file_paths) -> Result
+  def initialize: (Array[String] | String file_paths) -> void
   def parse: () -> Result
 
   private
 
-  @file_path: String
+  @file_paths: Array[String]
 
-  attr_reader file_path: String
+  attr_reader file_paths: Array[String]
 
-  def validate_file_exists: () -> void
-  def load_file_content: () -> String
+  def validate_file_exists?: (String file_path) -> bool
+  def load_file_content: (String file_path) -> String
 
   # RBSの構文解析とデータ抽出を行うクラス
   class SignatureAnalyzer
@@ -37,6 +37,8 @@ class RBSParser
 
     def self.extract_class_definition: (RBS::AST::Declarations::Class decl) -> Result::definition_hash
     def self.extract_module_definition: (RBS::AST::Declarations::Module decl) -> Result::definition_hash
+    def self.extract_includes_from_members: (Array[untyped] members) -> Array[String]
+    def self.extract_extends_from_members: (Array[untyped] members) -> Array[String]
 
     # メソッド処理を担当する内部クラス
     class Method
