@@ -1,57 +1,81 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/rbs_to_diagram'
+require 'optparse'
+require_relative 'helper'
 
-# コマンドライン引数の処理
-if ARGV.length > 2
-  puts "Usage: #{$PROGRAM_NAME} [input_rbs_file] [output_file]"
-  puts "Example: #{$PROGRAM_NAME}                              # Process all files in source/"
-  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs      # Process single file"
-  puts "Example: #{$PROGRAM_NAME} source/simple_class.rbs output/simple_class.json"
-  exit 1
-end
-
-if ARGV.empty?
-  # sourceディレクトリの全RBSファイルを処理
-  source_dir = 'source'
-  unless Dir.exist?(source_dir)
-    puts "Error: Source directory '#{source_dir}' not found"
-    exit 1
+class CLI
+  def initialize
+    @options = {}
+    @parser = create_option_parser
   end
 
-  rbs_files = Dir.glob(File.join(source_dir, '*.rbs'))
-  if rbs_files.empty?
-    puts "Error: No RBS files found in '#{source_dir}' directory"
-    exit 1
-  end
+  def run(args)
+    @parser.parse!(args)
 
-  puts "Processing #{rbs_files.length} RBS files from #{source_dir}/"
-
-  rbs_files.each do |input_file|
-    RBSToDiagram.execute(input_file, nil)
-    output_file = File.join('output', "#{File.basename(input_file, '.rbs')}.json")
-    puts "✓ Generated: #{output_file}"
-  rescue StandardError => e
-    puts "✗ Error processing #{input_file}: #{e.message}"
-  end
-else
-  # 単一ファイルを処理（従来の動作）
-  input_file = ARGV[0]
-  output_file = ARGV[1]
-
-  # ファイル存在チェック
-  unless File.exist?(input_file)
-    puts "Error: Input file '#{input_file}' not found"
-    exit 1
-  end
-
-  begin
-    RBSToDiagram.execute(input_file, output_file)
-    final_output_file = output_file || File.join('output', "#{File.basename(input_file, '.rbs')}.json")
-    puts "Successfully generated diagram: #{final_output_file}"
+    if @options[:demo]
+      run_demo
+    elsif args.empty?
+      process_source_directory
+    else
+      process_single_file(args[0], args[1])
+    end
   rescue StandardError => e
     puts "Error: #{e.message}"
     exit 1
   end
+
+  private
+
+  def create_option_parser
+    OptionParser.new do |opts|
+      opts.banner = "Usage: #{$PROGRAM_NAME} [options] [input_file] [output_file]"
+
+      opts.separator ''
+      opts.separator 'Options:'
+
+      opts.on('--demo', 'Run demo with sample RBS file') do
+        @options[:demo] = true
+      end
+
+      opts.on('-h', '--help', 'Show this help') do
+        puts opts
+        puts ''
+        puts CLIHelper.create_help_text($PROGRAM_NAME)
+        exit
+      end
+    end
+  end
+
+  def run_demo
+    CLIHelper.validate_demo_file
+    puts CLIHelper.demo_header
+    puts CLIHelper.demo_generation
+
+    result = RBSToDiagram.execute(CLIHelper::DEMO_INPUT_FILE, 'output/comprehensive_class.mermaid')
+    puts CLIHelper.generation_success(result[:output_file])
+    puts CLIHelper.mermaid_viewer_info(result)
+    puts CLIHelper.demo_completion(result[:output_file])
+  end
+
+  def process_source_directory
+    rbs_files = CLIHelper.validate_source_directory
+    puts CLIHelper.source_processing(rbs_files.length)
+
+    rbs_files.each do |input_file|
+      result = RBSToDiagram.execute(input_file, nil)
+      puts CLIHelper.generation_success(result[:output_file])
+    rescue StandardError => e
+      puts CLIHelper.generation_error(input_file, e.message)
+    end
+  end
+
+  def process_single_file(input_file, output_file)
+    CLIHelper.validate_input_file(input_file)
+
+    result = RBSToDiagram.execute(input_file, output_file)
+    puts CLIHelper.single_file_success(result[:output_file])
+  end
 end
+
+CLI.new.run(ARGV)
