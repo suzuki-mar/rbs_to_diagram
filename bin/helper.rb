@@ -3,11 +3,16 @@
 require_relative '../lib/rbs_to_diagram'
 
 class CLIHelper
-  DEMO_INPUT_FILE = 'source/demo.rbs'
+  DEMO_INPUT_DIR = 'source/demo'
   SOURCE_DIR = 'source'
 
-  def self.validate_demo_file
-    raise "Demo file '#{DEMO_INPUT_FILE}' not found" unless File.exist?(DEMO_INPUT_FILE)
+  def self.validate_demo_directory
+    raise "Demo directory '#{DEMO_INPUT_DIR}' not found" unless Dir.exist?(DEMO_INPUT_DIR)
+
+    rbs_files = Dir.glob(File.join(DEMO_INPUT_DIR, '*.rbs'))
+    raise "No RBS files found in '#{DEMO_INPUT_DIR}' directory" if rbs_files.empty?
+
+    rbs_files
   end
 
   def self.validate_source_directory
@@ -23,11 +28,12 @@ class CLIHelper
     raise "Input file '#{input_file}' not found" unless File.exist?(input_file)
   end
 
-  def self.demo_header
+  def self.demo_header(file_count)
     [
       '🚀 Running RBS to Diagram Demo',
       '=' * 50,
-      "Input file: #{DEMO_INPUT_FILE}",
+      "Input directory: #{DEMO_INPUT_DIR}",
+      "Processing #{file_count} RBS files",
       ''
     ].join("\n")
   end
