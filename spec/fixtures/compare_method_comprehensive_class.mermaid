@@ -1,0 +1,19 @@
+classDiagram
+    class ComprehensiveClass {
+        +<<static>> class_method(String) ComprehensiveClass
+        +simple_method() String
+        +method_with_args(String, Integer) String
+        +method_with_optional(String, Integer?) String
+        +method_with_keywords(name: String, age: Integer) String
+        +method_with_optional_keywords(name: String, age?: Integer) String
+        +method_with_block() &block(String) -> void Array[String]
+        +method_with_splat(*String) Array[String]
+        +method_with_rest_keywords(**String) Hash[String, String]
+        +complex_method(String, Integer?, *String, **String) &block(String) -> void Hash[String, String]
+        +overloaded_method(String) String
+        +union_return() String | Integer | nil
+        +generic_return(T) Array[T]
+        +void_method(String) void
+        +public_method() String
+        -private_method() String
+    }
