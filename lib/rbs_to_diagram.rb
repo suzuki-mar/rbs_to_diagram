@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require_relative 'rbs_parser'
 require_relative 'formatter'
 
@@ -19,9 +20,12 @@ class RBSToDiagram
     FileUtils.mkdir_p(File.dirname(output_file))
 
     parser_result = RBSParser.parse(input_file)
-    output = Formatter.format(parser_result)
+    format_type = determine_format_type(output_file)
+    output = Formatter.format(parser_result, format_type)
 
     File.write(output_file, output)
+
+    { output_file: output_file, format_type: format_type, content: output }
   end
 
   private
@@ -40,5 +44,14 @@ class RBSToDiagram
     ext = File.extname(file_path)
 
     File.join(dir, "#{basename}_#{timestamp}#{ext}")
+  end
+
+  def determine_format_type(file_path)
+    case File.extname(file_path)
+    when '.mermaid'
+      :mermaidjs
+    else
+      :json # デフォルトはJSON（.jsonや未知の拡張子）
+    end
   end
 end

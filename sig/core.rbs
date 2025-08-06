@@ -94,9 +94,15 @@ class Result
 end
 
 class RBSToDiagram
-  def self.execute: (String input_file, ?String? output_file) -> void
+  type execute_result = {
+    output_file: String,
+    format_type: Symbol,
+    content: String
+  }
+
+  def self.execute: (String input_file, ?String? output_file) -> execute_result
   def initialize: (String input_file, String? output_file) -> void
-  def execute: () -> void
+  def execute: () -> execute_result
 
   private
 
@@ -108,18 +114,23 @@ class RBSToDiagram
 
   def default_output_file_path: () -> String
   def add_timestamp_to_filename: (String file_path) -> String
+  def determine_format_type: (String file_path) -> Symbol
 end
 
 
 
 class Formatter
-  def self.format: (Result parser_result) -> String
+  def self.format: (Result parser_result, ?Symbol format_type) -> String
   def initialize: () -> void
-  def format: (Result parser_result) -> String
+  def format: (Result parser_result, ?Symbol format_type) -> String
 
   private
 
   @json_formatter: Formatter::JSON
+  @mermaidjs_formatter: Formatter::MermaidJS
+
+  attr_reader json_formatter: Formatter::JSON
+  attr_reader mermaidjs_formatter: Formatter::MermaidJS
 
   class JSON
     type json_block_hash = {
