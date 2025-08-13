@@ -1,0 +1,5 @@
+# Moduleのテスト用RBSファイル
+module Authenticatable
+  def authenticate: (String password) -> bool
+  def logout: () -> void
+end
