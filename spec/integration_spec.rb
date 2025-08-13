@@ -24,6 +24,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
         'spec/fixtures/target_related_classes.rbs',
         'spec/output/target_related_classes.mermaid',
         'spec/fixtures/compare_related_classes.mermaid'
+      ],
+      [
+        'spec/fixtures/target_module.rbs',
+        'spec/output/target_module.mermaid',
+        'spec/fixtures/compare_module.mermaid'
       ]
     ]
   end

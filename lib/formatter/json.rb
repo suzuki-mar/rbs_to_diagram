@@ -20,8 +20,24 @@ class Formatter
       # ClassDefinitionオブジェクトをHashに変換
       class_hashes = parser_result.class_definitions.map { |class_def| convert_class_definition_to_hash(class_def) }
 
+      # ModuleDefinitionオブジェクトをHashに変換
+      module_hashes = parser_result.module_definitions.map do |module_def|
+        convert_module_definition_to_hash(module_def)
+      end
+
       # Resultクラスから既に詳細構造が返されるので、それらを結合するだけ
-      class_hashes + parser_result.module_definitions
+      class_hashes + module_hashes
+    end
+
+    def convert_module_definition_to_hash(module_def)
+      {
+        type: module_def.type,
+        name: module_def.name,
+        superclass: nil,
+        methods: module_def.methods.map { |method| convert_method_to_hash(method) },
+        includes: module_def.includes,
+        extends: module_def.extends
+      }
     end
 
     def convert_class_definition_to_hash(class_def)

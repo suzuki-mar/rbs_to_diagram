@@ -29,7 +29,7 @@ class Result
 
   def initialize: (definitions: Array[definition_hash]) -> void
   def class_definitions: () -> Array[Result::ClassNode]
-  def module_definitions: () -> Array[definition_hash]
+  def module_definitions: () -> Array[Result::ModuleNode]
   def find_relationships: () -> Array[Result::RelationshipNode]
 
   private
@@ -39,7 +39,7 @@ class Result
   def add_inheritance_relationship: (Result::ClassNode class_node) -> void
   def add_delegation_relationships: (Result::ClassNode class_node) -> void
   def builtin_class?: (String type_name) -> bool
-  def build_detailed_module_structure: (definition_hash module_def) -> definition_hash
+  def build_detailed_module_structure: (definition_hash module_def) -> Result::ModuleNode
 
   # ベースノードクラス
   class Node
@@ -69,6 +69,25 @@ class Result
     private
 
     def extract_method_nodes: () -> Array[Result::MethodNode]
+    def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
+    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
+  end
+
+  # モジュールノード
+  class ModuleNode < Result::Node
+    attr_reader includes: Array[String]
+    attr_reader extends: Array[String]
+
+    %a{override}
+    def initialize: (name: String, ?includes: Array[String], ?extends: Array[String]) -> void
+    def self.from_hash: (definition_hash module_def) -> Result::ModuleNode
+    def methods: () -> Array[Result::MethodNode]
+    def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
+    def add_relationship: (Result::RelationshipNode relationship_node) -> void
+    def relationships: () -> Array[Result::RelationshipNode]
+
+    private
+
     def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
     def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
   end
@@ -109,6 +128,23 @@ class Result
 
       def initialize: (parameters: Array[Parameter], return_type: String) -> void
     end
+  end
+
+  # ノード構築を担当するクラス
+  class NodeBuilder
+    def self.build_class_node: (definition_hash class_def) -> Result::ClassNode
+    def self.build_module_node: (definition_hash module_def) -> Result::ModuleNode
+    def build_class_node: (definition_hash class_def) -> Result::ClassNode
+    def build_module_node: (definition_hash module_def) -> Result::ModuleNode
+
+    private
+
+    def add_methods_to_node: ((Result::ClassNode | Result::ModuleNode) node, Array[Hash[Symbol, untyped]] methods) -> void
+    def add_inheritance_relationship: (Result::ClassNode class_node) -> void
+    def add_delegation_relationships: (Result::ClassNode class_node) -> void
+    def add_include_relationships: (Result::ModuleNode module_node) -> void
+    def add_extend_relationships: (Result::ModuleNode module_node) -> void
+    def builtin_class?: (String type_name) -> bool
   end
 end
 
