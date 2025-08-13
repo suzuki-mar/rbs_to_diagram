@@ -15,6 +15,15 @@ class Formatter
         ]
       end
 
+      def self.module_definition(module_name, methods)
+        [
+          "    class #{module_name} {",
+          '        <<module>>',
+          *methods.map { |method| "        #{method}" },
+          '    }'
+        ]
+      end
+
       def self.inheritance_arrow(parent, child, label = nil)
         label_part = label ? " : \"#{label}\"" : ''
         "    #{parent} <|-- #{child}#{label_part}"
@@ -35,7 +44,7 @@ class Formatter
         visibility_symbol = format_visibility(visibility)
         static_prefix = static ? '<<static>> ' : ''
         params_str = params.empty? ? '()' : "(#{params.join(', ')})"
-        block_signature = block.empty? ? '' : block.to_s
+        block_signature = block.nil? || block.empty? ? '' : block.to_s
 
         "#{visibility_symbol}#{static_prefix}#{name}#{params_str}#{block_signature} #{return_type}"
       end

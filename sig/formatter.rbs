@@ -43,6 +43,7 @@ class Formatter
 
     def build_structure: (Result parser_result) -> Array[Hash[Symbol, untyped]]
     def convert_class_definition_to_hash: (Result::ClassNode class_def) -> Hash[Symbol, untyped]
+    def convert_module_definition_to_hash: (Result::ModuleNode module_def) -> Hash[Symbol, untyped]
     def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
     def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
     def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
@@ -59,12 +60,18 @@ class Formatter
 
     def build_class_diagrams: () -> Array[String]
     def convert_class_to_mermaid: (Result::ClassNode class_def) -> Array[String]
+    def convert_module_to_mermaid: (Result::ModuleNode module_def) -> Array[String]
     def convert_method_to_mermaid: (Result::MethodNode method) -> String
+    def convert_module_method_to_mermaid: (Result::MethodNode method) -> String
+    def convert_method_hash_to_mermaid: (Hash[Symbol, untyped] method_hash) -> String
+    def format_parameters_from_hash: (Array[Hash[Symbol, untyped]] parameters) -> String
+    def format_block_from_hash: (Hash[Symbol, untyped]? block_hash) -> String?
     def build_relationships: () -> Array[String]
 
     class Syntax
       def self.class_diagram_header: () -> String
       def self.class_definition: (String class_name, Array[String] methods) -> Array[String]
+      def self.module_definition: (String module_name, Array[String] methods) -> Array[String]
       def self.inheritance_arrow: (String parent, String child, ?String? label) -> String
       def self.delegation_arrow: (String delegator, String delegatee, ?String? label) -> String
       def self.comment: (String text) -> String
