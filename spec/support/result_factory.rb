@@ -34,7 +34,7 @@ class ResultFactory
     private
 
     def create_result(definitions: [])
-      Result.new(definitions: definitions)
+      Result.build(definitions)
     end
 
     def create_custom_class_result(class_name:, methods: [])

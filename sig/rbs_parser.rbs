@@ -1,10 +1,17 @@
 # RBSParser - RBS解析関連の型定義
 
+# Parser用インターフェース定義（RBSParserパッケージが所有）
+interface _ParserResult
+  include _FormatterBase
+  def definitions: () -> Array[Result::definition_hash]
+  def parsed_at: () -> Time
+end
+
 # RBSライブラリのラッパークラス
 class RBSParser
-  def self.parse: (Array[String] | String file_paths) -> Result
+  def self.parse: (Array[String] | String file_paths) -> _ParserResult
   def initialize: (Array[String] | String file_paths) -> void
-  def parse: () -> Result
+  def parse: () -> _ParserResult
 
   private
 

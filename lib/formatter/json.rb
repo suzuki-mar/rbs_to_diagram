@@ -17,16 +17,13 @@ class Formatter
     private
 
     def build_structure(parser_result)
-      # ClassDefinitionオブジェクトをHashに変換
-      class_hashes = parser_result.class_definitions.map { |class_def| convert_class_definition_to_hash(class_def) }
-
-      # ModuleDefinitionオブジェクトをHashに変換
-      module_hashes = parser_result.module_definitions.map do |module_def|
-        convert_module_definition_to_hash(module_def)
+      parser_result.find_nodes.map do |node|
+        if node.is_a?(Result::ClassNode)
+          convert_class_definition_to_hash(node)
+        else
+          convert_module_definition_to_hash(node)
+        end
       end
-
-      # Resultクラスから既に詳細構造が返されるので、それらを結合するだけ
-      class_hashes + module_hashes
     end
 
     def convert_module_definition_to_hash(module_def)
@@ -61,9 +58,9 @@ class Formatter
         overloads: method.overloads
       }
 
-      # ブロックがある場合のみblockフィールドを追加
-      if method.block
-        block_hash = convert_block_to_hash(method.block) # : Hash[Symbol, untyped]
+      block = method.block
+      if block
+        block_hash = convert_block_to_hash(block) # : Hash[Symbol, untyped]
         result = result.merge(block: block_hash) # : Hash[Symbol, untyped]
       end
 
@@ -74,7 +71,6 @@ class Formatter
       if parameter.is_a?(Parameter)
         parameter.to_hash
       else
-        # ハッシュの場合でもkindフィールドを含める
         result = {
           name: parameter[:name],
           type: parameter[:type]

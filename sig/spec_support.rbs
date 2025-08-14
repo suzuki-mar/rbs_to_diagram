@@ -1,14 +1,14 @@
 # spec/support用の型定義ファイル
 
-# ResultFactoryクラス - テスト用のResultインスタンス作成
+# ResultFactory - テスト用のResultオブジェクト生成クラス
 class ResultFactory
-  def self.create_comprehensive_method_class_result: () -> Result
-  def self.create_simple_class_result: (?class_name: String) -> Result
+  def self.create_comprehensive_method_class_result: () -> _ParserResult
+  def self.create_simple_class_result: (?class_name: String) -> _ParserResult
 
   private
 
-  def self.create_result: (?definitions: Array[Result::definition_hash]) -> Result
-  def self.create_custom_class_result: (class_name: String, ?methods: Array[Hash[Symbol, untyped]]) -> Result
+  def self.create_result: (?definitions: Array[Result::definition_hash]) -> _ParserResult
+  def self.create_custom_class_result: (class_name: String, ?methods: Array[Hash[Symbol, untyped]]) -> _ParserResult
   def self.build_basic_method: (String name, String return_type, ?parameters: Array[Hash[Symbol, String]], ?method_type: String, ?visibility: String, ?overloads: Array[Hash[Symbol, untyped]]) -> Hash[Symbol, untyped]
   def self.build_parametered_method: (String name, String return_type, Array[Hash[Symbol, String]] parameters, ?method_type: String, ?visibility: String, ?overloads: Array[Hash[Symbol, untyped]]) -> Hash[Symbol, untyped]
   def self.required_positional_param: (String name, String type) -> Hash[Symbol, String]

@@ -5,34 +5,22 @@ require_relative 'result/node_builder'
 class Result
   attr_reader :definitions, :parsed_at
 
+  private_class_method :new
+
   def initialize(definitions:)
     @definitions = definitions
     @parsed_at = Time.now
   end
 
-  def class_definitions
-    @definitions.select { |definition| definition[:type] == :class }
-                .map { |definition| build_detailed_class_structure(definition) }
+  def find_nodes
+    class_nodes = @definitions.select { |definition| definition[:type] == :class }
+                              .map { |definition| NodeBuilder.build_class_node(definition) }
+    module_nodes = @definitions.select { |definition| definition[:type] == :module }
+                               .map { |definition| NodeBuilder.build_module_node(definition) }
+    class_nodes + module_nodes
   end
 
-  def module_definitions
-    @definitions.select { |definition| definition[:type] == :module }
-                .map { |definition| build_detailed_module_structure(definition) }
-  end
-
-  def find_relationships
-    class_relationships = class_definitions.flat_map(&:relationships)
-    module_relationships = module_definitions.flat_map(&:relationships)
-    (class_relationships + module_relationships).uniq
-  end
-
-  private
-
-  def build_detailed_class_structure(class_def)
-    NodeBuilder.build_class_node(class_def)
-  end
-
-  def build_detailed_module_structure(module_def)
-    NodeBuilder.build_module_node(module_def)
+  def self.build(definitions)
+    new(definitions: definitions)
   end
 end
