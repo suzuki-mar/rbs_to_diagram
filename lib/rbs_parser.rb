@@ -26,7 +26,7 @@ class RBSParser
       all_definitions.concat(definitions)
     end
 
-    Result.new(definitions: all_definitions)
+    Result.build(all_definitions)
   end
 
   private

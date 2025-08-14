@@ -1,6 +1,23 @@
-# RBS to Diagram - 型定義ファイル
 
-# 内部データ構造のクラス
+# RBS to Diagram - パッケージ間インターフェース定義
+#
+# このファイルは各パッケージ間の契約を定義します。
+# 各パッケージのエントリーポイントと、パッケージ間でやり取りするデータ型を明示しています。
+#
+# パッケージ構成:
+# - RBSParser: RBSファイルの解析を担当 (詳細: sig/rbs_parser.rbs)
+# - Formatter: 解析結果の出力形式変換を担当 (詳細: sig/formatter.rbs)  
+# - Result: パッケージ間で共有するデータクラス (詳細: sig/result.rbs)
+#
+# 依存関係:
+# RBSParser -> Result <- Formatter
+
+# Formatter用の基本インターフェース（共通部分）
+interface _FormatterBase
+  def find_nodes: () -> Array[_FormatterResultNode]
+end
+
+
 class Parameter
   attr_reader name: String
   attr_reader type: String
@@ -13,8 +30,10 @@ end
 
 
 
-# RBS解析結果を集約するデータクラス
+# RBS解析結果を集約するデータクラス（パブリックインターフェースのみ）
 class Result
+  include _ParserResult
+  
   type definition_hash = {
     type: Symbol,
     name: String,
@@ -24,129 +43,15 @@ class Result
     extends: Array[String]
   }
 
-  attr_reader definitions: Array[definition_hash]
-  attr_reader parsed_at: Time
-
-  def initialize: (definitions: Array[definition_hash]) -> void
-  def class_definitions: () -> Array[Result::ClassNode]
-  def module_definitions: () -> Array[Result::ModuleNode]
-  def find_relationships: () -> Array[Result::RelationshipNode]
+  def self.build: (Array[definition_hash] definitions) -> _ParserResult
 
   private
 
-  def build_detailed_class_structure: (definition_hash class_def) -> Result::ClassNode
-  def add_methods_to_class_node: (Result::ClassNode class_node, Array[Hash[Symbol, untyped]] methods) -> void
-  def add_inheritance_relationship: (Result::ClassNode class_node) -> void
-  def add_delegation_relationships: (Result::ClassNode class_node) -> void
-  def builtin_class?: (String type_name) -> bool
-  def build_detailed_module_structure: (definition_hash module_def) -> Result::ModuleNode
+  def initialize: (definitions: Array[definition_hash]) -> void
 
-  # ベースノードクラス
-  class Node
-    attr_reader name: String
-    attr_reader type: Symbol
-    attr_reader children: Array[Result::Node]
-
-    def initialize: (name: String, type: Symbol, ?children: Array[Result::Node]) -> void
-    def add_child: (Result::Node child) -> void
-    def find_by_type: (Symbol target_type) -> Array[Result::Node]
-  end
-
-  # クラスノード
-  class ClassNode < Result::Node
-    attr_reader superclass: String?
-    attr_reader includes: Array[String]
-    attr_reader extends: Array[String]
-
-    %a{override}
-    def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
-    def self.from_hash: (definition_hash class_def) -> Result::ClassNode
-    def methods: () -> Array[Result::MethodNode]
-    def relationships: () -> Array[Result::RelationshipNode]
-    def add_relationship: (Result::RelationshipNode relationship_node) -> void
-    def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
-
-    private
-
-    def extract_method_nodes: () -> Array[Result::MethodNode]
-    def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
-    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
-  end
-
-  # モジュールノード
-  class ModuleNode < Result::Node
-    attr_reader includes: Array[String]
-    attr_reader extends: Array[String]
-
-    %a{override}
-    def initialize: (name: String, ?includes: Array[String], ?extends: Array[String]) -> void
-    def self.from_hash: (definition_hash module_def) -> Result::ModuleNode
-    def methods: () -> Array[Result::MethodNode]
-    def methods_ordered_by_visibility_and_type: () -> Array[Result::MethodNode]
-    def add_relationship: (Result::RelationshipNode relationship_node) -> void
-    def relationships: () -> Array[Result::RelationshipNode]
-
-    private
-
-    def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
-    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
-  end
-
-  # 関係性ノード
-  class RelationshipNode < Result::Node
-    attr_reader relationship_type: Symbol
-    attr_reader from: String
-    attr_reader to: String
-
-    %a{override}
-    def initialize: (name: String, relationship_type: Symbol, from: String, to: String) -> void
-    def inheritance?: () -> bool
-    def delegation?: () -> bool
-  end
-
-  # メソッドノード
-  class MethodNode < Result::Node
-    attr_reader method_type: String
-    attr_reader visibility: String
-    attr_reader parameters: Array[Parameter]
-    attr_reader return_type: String
-    attr_reader overloads: Array[Hash[Symbol, untyped]]
-    attr_reader block: Result::MethodNode::Block?
-
-    %a{override}
-    def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::MethodNode::Block?) -> void
-    def self.from_hash: (Hash[Symbol, untyped] method_hash) -> Result::MethodNode
-
-    private
-
-    def self.build_parameters: (Array[Parameter | Hash[Symbol, String]] param_objects) -> Array[Parameter]
-    def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::MethodNode::Block?
-
-    class Block
-      attr_reader parameters: Array[Parameter]
-      attr_reader return_type: String
-
-      def initialize: (parameters: Array[Parameter], return_type: String) -> void
-    end
-  end
-
-  # ノード構築を担当するクラス
-  class NodeBuilder
-    def self.build_class_node: (definition_hash class_def) -> Result::ClassNode
-    def self.build_module_node: (definition_hash module_def) -> Result::ModuleNode
-    def build_class_node: (definition_hash class_def) -> Result::ClassNode
-    def build_module_node: (definition_hash module_def) -> Result::ModuleNode
-
-    private
-
-    def add_methods_to_node: ((Result::ClassNode | Result::ModuleNode) node, Array[Hash[Symbol, untyped]] methods) -> void
-    def add_inheritance_relationship: (Result::ClassNode class_node) -> void
-    def add_delegation_relationships: (Result::ClassNode class_node) -> void
-    def add_include_relationships: (Result::ModuleNode module_node) -> void
-    def add_extend_relationships: (Result::ModuleNode module_node) -> void
-    def builtin_class?: (String type_name) -> bool
-  end
+  #詳細はresult.rbsを参照
 end
+
 
 class RBSToDiagram
   type execute_result = {

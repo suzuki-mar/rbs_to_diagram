@@ -1,8 +1,39 @@
 
+# Formatter用インターフェース定義（Formatterパッケージが所有）
+interface _FormatterResult
+  include _FormatterBase
+end
+
+interface _FormatterResultMethod
+  def name: () -> String
+  def method_type: () -> String
+  def visibility: () -> String
+  def return_type: () -> String
+  def parameters: () -> Array[Parameter]
+  def overloads: () -> Array[Hash[Symbol, untyped]]
+  def block: () -> Result::MethodNode::Block?
+end
+
+interface _FormatterResultNode
+  def name: () -> String
+  def type: () -> Symbol
+  def methods_ordered_by_visibility_and_type: () -> Array[_FormatterResultMethod]
+  def methods: () -> Array[_FormatterResultMethod]
+  def is_a?: (Module) -> bool
+  def relationships: () -> Array[Result::RelationshipNode]
+  def includes: () -> Array[String]
+  def extends: () -> Array[String]
+end
+
+interface _FormatterResultClassNode
+  include _FormatterResultNode
+  def superclass: () -> String?
+end
+
 class Formatter
-  def self.format: (Result parser_result, ?Symbol format_type) -> String
+  def self.format: (_FormatterResult parser_result, ?Symbol format_type) -> String
   def initialize: () -> void
-  def format: (Result parser_result, ?Symbol format_type) -> String
+  def format: (_FormatterResult parser_result, ?Symbol format_type) -> String
 
   private
 
@@ -37,31 +68,32 @@ class Formatter
       extends: Array[String]
     }
 
-    def format: (Result parser_result) -> String
+    def format: (_FormatterResult parser_result) -> String
 
     private
 
-    def build_structure: (Result parser_result) -> Array[Hash[Symbol, untyped]]
-    def convert_class_definition_to_hash: (Result::ClassNode class_def) -> Hash[Symbol, untyped]
-    def convert_module_definition_to_hash: (Result::ModuleNode module_def) -> Hash[Symbol, untyped]
-    def convert_method_to_hash: (Result::MethodNode method) -> Hash[Symbol, untyped]
+    def build_structure: (_FormatterResult parser_result) -> Array[Hash[Symbol, untyped]]
+    def convert_class_definition_to_hash: (_FormatterResultClassNode class_def) -> Hash[Symbol, untyped]
+    def convert_module_definition_to_hash: (_FormatterResultNode module_def) -> Hash[Symbol, untyped]
+    def convert_method_to_hash: (_FormatterResultMethod method) -> Hash[Symbol, untyped]
     def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
     def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
   end
 
   class MermaidJS
-    def format: (Result parser_result) -> String
+    def format: (_FormatterResult parser_result) -> String
 
     private
 
-    @parser_result: Result
+    @parser_result: _FormatterResult
 
-    attr_reader parser_result: Result
+    attr_reader parser_result: _FormatterResult
 
     def build_class_diagrams: () -> Array[String]
+    def convert_node_to_mermaid: (_FormatterResultNode node) -> Array[String]
     def convert_class_to_mermaid: (Result::ClassNode class_def) -> Array[String]
     def convert_module_to_mermaid: (Result::ModuleNode module_def) -> Array[String]
-    def convert_method_to_mermaid: (Result::MethodNode method) -> String
+    def convert_method_to_mermaid: (_FormatterResultMethod method, ?Symbol node_type) -> String
     def convert_module_method_to_mermaid: (Result::MethodNode method) -> String
     def convert_method_hash_to_mermaid: (Hash[Symbol, untyped] method_hash) -> String
     def format_parameters_from_hash: (Array[Hash[Symbol, untyped]] parameters) -> String
@@ -76,7 +108,7 @@ class Formatter
       def self.delegation_arrow: (String delegator, String delegatee, ?String? label) -> String
       def self.comment: (String text) -> String
       def self.method_signature: (visibility: String, static: bool, name: String, params: Array[String], block: String, return_type: String) -> String
-      def self.format_method_parameters: (Result::MethodNode method) -> String
+      def self.format_method_parameters: (_FormatterResultMethod method) -> String
       def self.format_param: (Parameter param) -> String?
       def self.format_block_signature: (Result::MethodNode::Block? block) -> String
       def self.build_relationships: (Array[Result::RelationshipNode] relationships) -> Array[String]
