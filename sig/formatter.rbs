@@ -44,40 +44,54 @@ class Formatter
   attr_reader mermaidjs_formatter: Formatter::MermaidJS
 
   class JSON
-    type json_block_hash = {
-      parameters: Array[Hash[Symbol, String]],
-      return_type: String
-    }
+    class Definition
+      @type: untyped
+      @name: untyped
+      @superclass: untyped
+      @methods: untyped
+      @includes: untyped
+      @extends: untyped
+      @method_type: untyped
+      @visibility: untyped
+      @parameters: untyped
+      @return_type: untyped
+      @overloads: untyped
+      @block: untyped
+      @kind: untyped
 
-    type json_method_hash = {
-      name: String,
-      method_type: String,
-      visibility: String,
-      parameters: Array[Hash[Symbol, String]],
-      return_type: String,
-      overloads: Array[Hash[Symbol, untyped]],
-      block: json_block_hash?
-    }
+      def initialize: (
+        ?type: untyped,
+        ?name: untyped,
+        ?superclass: untyped,
+        ?methods: untyped,
+        ?includes: untyped,
+        ?extends: untyped,
+        ?method_type: untyped,
+        ?visibility: untyped,
+        ?parameters: untyped,
+        ?return_type: untyped,
+        ?overloads: untyped,
+        ?block: untyped,
+        ?kind: untyped
+      ) -> void
+      def to_hash: () -> Hash[Symbol, untyped]
 
-    type json_class_hash = {
-      type: Symbol,
-      name: String,
-      superclass: String?,
-      methods: Array[json_method_hash],
-      includes: Array[String],
-      extends: Array[String]
-    }
+      private
+
+      def should_output_to_json?: (Symbol key, untyped value) -> bool
+      def convert_value_for_hash: (untyped value) -> untyped
+    end
 
     def format: (_FormatterResult parser_result) -> String
 
     private
 
     def build_structure: (_FormatterResult parser_result) -> Array[Hash[Symbol, untyped]]
-    def convert_class_definition_to_hash: (_FormatterResultClassNode class_def) -> Hash[Symbol, untyped]
-    def convert_module_definition_to_hash: (_FormatterResultNode module_def) -> Hash[Symbol, untyped]
-    def convert_method_to_hash: (_FormatterResultMethod method) -> Hash[Symbol, untyped]
-    def convert_parameter_to_hash: (Parameter | Hash[Symbol, String] parameter) -> Hash[Symbol, String]
-    def convert_block_to_hash: (Result::MethodNode::Block block) -> json_block_hash
+    def convert_class_definition_to_data: (_FormatterResultClassNode class_def) -> Definition
+    def convert_module_definition_to_data: (_FormatterResultNode module_def) -> Definition
+    def convert_method_to_data: (_FormatterResultMethod method) -> Definition
+    def convert_block_to_data: (Result::MethodNode::Block block) -> Definition
+    def convert_parameters_to_definitions: (Array[Parameter | Hash[Symbol, String]] parameters) -> Array[Hash[Symbol, String]]
   end
 
   class MermaidJS
