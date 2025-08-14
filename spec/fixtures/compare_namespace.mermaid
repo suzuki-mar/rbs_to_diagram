@@ -1,0 +1,18 @@
+classDiagram
+namespace MyApp_Models {
+    class User {
+        +initialize(String name) void
+        +name() String
+    }
+}
+
+class Authenticatable {
+    +authenticate(String password) bool
+    +logout() void
+}
+
+class EmptyNamespace {
+    <<namespace>>
+}
+
+note for MyApp_Models "Namespace: MyApp::Models"
