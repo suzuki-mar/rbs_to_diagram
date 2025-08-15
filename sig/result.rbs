@@ -41,7 +41,7 @@ class Result
     include _FormatterResultNode
 
     %a{override}
-    def initialize: (name: String, ?includes: Array[String], ?extends: Array[String]) -> void
+    def initialize: (name: String, ?includes: Array[String], ?extends: Array[String], ?is_namespace: bool) -> void
     def self.from_hash: (definition_hash module_def) -> Result::ModuleNode
     def add_relationship: (Result::RelationshipNode relationship_node) -> void
 

@@ -173,13 +173,8 @@ class Authenticatable {
     +logout() void
 }
 
-class EmptyNamespace {
-    <<namespace>>
-}
 
 note for MyApp_Models "Namespace: MyApp::Models"
-note for Authenticatable "Regular Module"
-note for EmptyNamespace "Namespace: EmptyNamespace"
 ```
 
 ## Testing Strategy

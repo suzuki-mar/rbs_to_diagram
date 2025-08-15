@@ -24,7 +24,8 @@ class ResultFactory
                                    ])
         ],
         includes: [], # : Array[String]
-        extends: [] # : Array[String]
+        extends: [], # : Array[String]
+        is_namespace: false
       }
 
       definitions = [simple_class_definition] # : Array[Result::definition_hash]
@@ -44,7 +45,8 @@ class ResultFactory
         superclass: nil,
         methods: methods,
         includes: [], # : Array[String]
-        extends: [] # : Array[String]
+        extends: [], # : Array[String]
+        is_namespace: false
       }
 
       definitions = [custom_class_definition] # : Array[Result::definition_hash]
