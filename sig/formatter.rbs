@@ -14,12 +14,17 @@ interface _FormatterResultMethod
   def block: () -> Result::MethodNode::Block?
 end
 
-interface _FormatterResultNode
+interface _Node
   def name: () -> String
   def type: () -> Symbol
+  def is_a?: (Module) -> bool
+  def is_namespace: () -> bool
+end
+
+interface _FormatterResultNode
+  include _Node
   def methods_ordered_by_visibility_and_type: () -> Array[_FormatterResultMethod]
   def methods: () -> Array[_FormatterResultMethod]
-  def is_a?: (Module) -> bool
   def relationships: () -> Array[Result::RelationshipNode]
   def includes: () -> Array[String]
   def extends: () -> Array[String]
@@ -58,6 +63,7 @@ class Formatter
       @overloads: untyped
       @block: untyped
       @kind: untyped
+      @is_namespace: untyped
 
       def initialize: (
         ?type: untyped,
@@ -72,7 +78,8 @@ class Formatter
         ?return_type: untyped,
         ?overloads: untyped,
         ?block: untyped,
-        ?kind: untyped
+        ?kind: untyped,
+        ?is_namespace: untyped
       ) -> void
       def to_hash: () -> Hash[Symbol, untyped]
 

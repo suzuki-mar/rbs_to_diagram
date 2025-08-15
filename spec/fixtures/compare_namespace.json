@@ -5,12 +5,12 @@
       "name": "MyApp",
       "superclass": null,
       "methods": [],
-      "is_namespace": true,
       "includes": [],
-      "extends": []
+      "extends": [],
+      "is_namespace": true
     },
     {
-      "type": "module", 
+      "type": "module",
       "name": "Authenticatable",
       "superclass": null,
       "methods": [
@@ -21,33 +21,50 @@
           "parameters": [
             {
               "name": "password",
-              "type": "String"
+              "type": "String",
+              "kind": "required_positional"
             }
           ],
           "return_type": "bool",
-          "overloads": []
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "password",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "bool"
+            }
+          ]
         },
         {
           "name": "logout",
-          "method_type": "instance", 
+          "method_type": "instance",
           "visibility": "public",
           "parameters": [],
           "return_type": "void",
-          "overloads": []
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "void"
+            }
+          ]
         }
       ],
-      "is_namespace": false,
       "includes": [],
-      "extends": []
+      "extends": [],
+      "is_namespace": false
     },
     {
       "type": "module",
       "name": "EmptyNamespace",
       "superclass": null,
       "methods": [],
-      "is_namespace": true,
       "includes": [],
-      "extends": []
+      "extends": [],
+      "is_namespace": true
     }
   ]
 }

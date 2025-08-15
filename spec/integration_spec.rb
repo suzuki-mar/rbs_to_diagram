@@ -29,6 +29,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
         'spec/fixtures/target_module.rbs',
         'spec/output/target_module.mermaid',
         'spec/fixtures/compare_module.mermaid'
+      ],
+      [
+        'spec/fixtures/target_namespace.rbs',
+        'spec/output/target_namespace.json',
+        'spec/fixtures/compare_namespace.json'
       ]
     ]
   end

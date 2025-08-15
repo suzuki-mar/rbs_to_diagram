@@ -36,7 +36,8 @@ class Formatter
         superclass: nil,
         methods: methods,
         includes: module_def.includes,
-        extends: module_def.extends
+        extends: module_def.extends,
+        is_namespace: module_def.is_namespace
       )
     end
 

@@ -5,7 +5,7 @@ class Formatter
     # JSON出力用の統一データクラス
     class Definition
       attr_reader :type, :name, :superclass, :methods, :includes, :extends, :method_type, :visibility, :parameters,
-                  :return_type, :overloads, :block, :kind
+                  :return_type, :overloads, :block, :kind, :is_namespace
 
       # データクラスなのでパラメーターが複数あっても問題ない
       # rubocop:disable  Metrics/ParameterLists
@@ -22,7 +22,8 @@ class Formatter
         return_type: nil,
         overloads: nil,
         block: nil,
-        kind: nil
+        kind: nil,
+        is_namespace: nil
       )
         @type = type
         @name = name
@@ -37,6 +38,7 @@ class Formatter
         @overloads = overloads
         @block = block
         @kind = kind
+        @is_namespace = is_namespace
       end
       # rubocop:enable  Metrics/ParameterLists
 

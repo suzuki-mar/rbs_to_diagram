@@ -68,13 +68,15 @@ class RBSParser
 
     private_class_method def self.extract_module_definition(decl)
       methods = Method.extract_from_members(decl.members)
+      is_namespace = determine_namespace_usage(decl.members)
       {
         type: :module,
         name: decl.name.to_s,
         methods: methods,
         superclass: nil,
         includes: extract_includes_from_members(decl.members),
-        extends: extract_extends_from_members(decl.members)
+        extends: extract_extends_from_members(decl.members),
+        is_namespace: is_namespace
       }
     end
 
@@ -92,6 +94,21 @@ class RBSParser
 
         member.name.to_s
       end
+    end
+
+    private_class_method def self.determine_namespace_usage(members)
+      # 他のクラスやmoduleを含む場合はネームスペース
+      # メソッドがない場合（空のmodule）もネームスペース
+      # メソッドのみの場合は通常のmodule
+      has_nested_definitions = members.any? do |member|
+        member.is_a?(RBS::AST::Declarations::Class) ||
+          member.is_a?(RBS::AST::Declarations::Module)
+      end
+
+      has_methods = members.any?(RBS::AST::Members::MethodDefinition)
+
+      # ネストした定義があるか、メソッドがない場合はネームスペース
+      has_nested_definitions || !has_methods
     end
   end
 end

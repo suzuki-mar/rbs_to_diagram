@@ -40,7 +40,8 @@ class Result
     methods: Array[Hash[Symbol, untyped]],
     superclass: String?,
     includes: Array[String],
-    extends: Array[String]
+    extends: Array[String],
+    is_namespace: bool?
   }
 
   def self.build: (Array[definition_hash] definitions) -> _ParserResult

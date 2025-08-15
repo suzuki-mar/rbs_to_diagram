@@ -4,20 +4,22 @@ require_relative 'node'
 
 class Result
   class ModuleNode < Node
-    attr_reader :includes, :extends
+    attr_reader :includes, :extends, :is_namespace
 
     def self.from_hash(module_hash)
       new(
         name: module_hash[:name],
         includes: module_hash[:includes] || [],
-        extends: module_hash[:extends] || []
+        extends: module_hash[:extends] || [],
+        is_namespace: module_hash[:is_namespace] || false
       )
     end
 
-    def initialize(name:, includes: [], extends: [])
+    def initialize(name:, includes: [], extends: [], is_namespace: false)
       super(name: name, type: :module)
       @includes = includes
       @extends = extends
+      @is_namespace = is_namespace
     end
 
     def methods

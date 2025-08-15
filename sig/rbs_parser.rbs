@@ -46,6 +46,7 @@ class RBSParser
     def self.extract_module_definition: (RBS::AST::Declarations::Module decl) -> Result::definition_hash
     def self.extract_includes_from_members: (Array[untyped] members) -> Array[String]
     def self.extract_extends_from_members: (Array[untyped] members) -> Array[String]
+    def self.determine_namespace_usage: (Array[untyped] members) -> bool
 
     # メソッド処理を担当する内部クラス
     class Method
