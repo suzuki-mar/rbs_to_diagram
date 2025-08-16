@@ -18,12 +18,27 @@ class Formatter
     private
 
     def build_structure(parser_result)
-      parser_result.find_nodes.map do |node|
+      # JSON出力では特定のノードのみを出力
+      filtered_nodes = filter_nodes_for_json(parser_result.find_nodes)
+
+      filtered_nodes.map do |node|
         if node.is_a?(Result::ClassNode)
           convert_class_definition_to_data(node).to_hash
         else
           convert_module_definition_to_data(node).to_hash
         end
+      end
+    end
+
+    def filter_nodes_for_json(nodes)
+      # ネームスペース内のクラスを除外
+      # ネストしたネームスペース（MyApp::Models）を除外
+      # ルートレベルのネームスペース（MyApp）、通常のモジュール、空のネームスペースは含める
+      nodes.reject do |node|
+        # ネームスペース内のクラスを除外
+        (node.is_a?(Result::ClassNode) && node.name.include?('::')) ||
+          # ネストしたネームスペースを除外（::を含むネームスペース）
+          (node.is_a?(Result::ModuleNode) && node.is_namespace && node.name.include?('::'))
       end
     end
 

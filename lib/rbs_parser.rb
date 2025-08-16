@@ -15,7 +15,7 @@ class RBSParser
   end
 
   def parse
-    all_definitions = [] # : Array[Result::definition_hash]
+    all_definitions = [] # : Array[Hash[Symbol, untyped]]
 
     file_paths.each do |file_path|
       next unless validate_file_exists?(file_path)

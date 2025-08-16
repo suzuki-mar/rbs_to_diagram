@@ -12,5 +12,5 @@
 
 ## Mermaid.js対応フェーズ
 
-- [ ] 5. Mermaid.js出力にネームスペース表現を追加
+- [x] 5. Mermaid.js出力にネームスペース表現を追加
 - [ ] 6. Mermaid.js対応のテストを追加

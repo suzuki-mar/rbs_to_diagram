@@ -23,22 +23,39 @@ class Result
 
   # クラスノード
   class ClassNode < Result::Node
-    include _FormatterResultClassNode
+    include _ClassNode
+
+    private
+
+    @superclass: String?
+    @includes: Array[String]
+    @extends: Array[String]
+
+    public
 
     %a{override}
     def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
     def self.from_hash: (definition_hash class_def) -> Result::ClassNode
     def add_relationship: (Result::RelationshipNode relationship_node) -> void
+
     private
 
     def extract_method_nodes: () -> Array[Result::MethodNode]
     def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
-    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
+    def select_methods_by_visibility_and_type: (Array[_FormatterResultMethod] methods, String visibility, String method_type) -> Array[_FormatterResultMethod]
   end
 
   # モジュールノード
   class ModuleNode < Result::Node
-    include _FormatterResultNode
+    include _Node
+
+    private
+
+    @includes: Array[String]
+    @extends: Array[String]
+    @is_namespace: bool
+
+    public
 
     %a{override}
     def initialize: (name: String, ?includes: Array[String], ?extends: Array[String], ?is_namespace: bool) -> void
@@ -48,11 +65,19 @@ class Result
     private
 
     def extract_relationship_nodes: () -> Array[Result::RelationshipNode]
-    def select_methods_by_visibility_and_type: (Array[Result::MethodNode] methods, String visibility, String method_type) -> Array[Result::MethodNode]
+    def select_methods_by_visibility_and_type: (Array[_FormatterResultMethod] methods, String visibility, String method_type) -> Array[_FormatterResultMethod]
   end
 
   # 関係性ノード
   class RelationshipNode < Result::Node
+    private
+
+    @relationship_type: Symbol
+    @from: String
+    @to: String
+
+    public
+
     attr_reader relationship_type: Symbol
     attr_reader from: String
     attr_reader to: String
@@ -67,6 +92,19 @@ class Result
   class MethodNode < Result::Node
     include _FormatterResultMethod
 
+    private
+
+    @method_type: String
+    @visibility: String
+    @parameters: Array[Parameter]
+    @return_type: String
+    @overloads: Array[Hash[Symbol, untyped]]
+    @block: Result::MethodNode::Block?
+
+    public
+
+
+
     %a{override}
     def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::MethodNode::Block?) -> void
     def self.from_hash: (Hash[Symbol, untyped] method_hash) -> Result::MethodNode
@@ -77,6 +115,13 @@ class Result
     def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::MethodNode::Block?
 
     class Block
+      private
+
+      @parameters: Array[Parameter]
+      @return_type: String
+
+      public
+
       attr_reader parameters: Array[Parameter]
       attr_reader return_type: String
 
