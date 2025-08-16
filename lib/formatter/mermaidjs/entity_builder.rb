@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'syntax'
-require_relative 'entities'
+require_relative 'entity'
 
 class Formatter
   class MermaidJS

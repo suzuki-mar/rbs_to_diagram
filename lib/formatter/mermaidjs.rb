@@ -4,7 +4,7 @@ require_relative '../parameter'
 require_relative 'mermaidjs/syntax'
 require_relative 'mermaidjs/namespace_collection'
 require_relative 'mermaidjs/entity_builder'
-require_relative 'mermaidjs/entities'
+require_relative 'mermaidjs/entity'
 
 class Formatter
   class MermaidJS
