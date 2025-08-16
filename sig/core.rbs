@@ -12,10 +12,22 @@
 # 依存関係:
 # RBSParser -> Result <- Formatter
 
-# Formatter用の基本インターフェース（共通部分）
-interface _FormatterBase
-  def find_nodes: () -> Array[_FormatterResultNode]
+# 基底インターフェース
+interface _BaseResult
+  def find_nodes: () -> Array[_Node]
 end
+
+# Parser用インターフェース
+interface _ParserResult
+  include _BaseResult
+end
+
+# Formatter用インターフェース
+interface _FormatterResult
+  include _BaseResult
+end
+
+
 
 
 class Parameter
@@ -33,18 +45,11 @@ end
 # RBS解析結果を集約するデータクラス（パブリックインターフェースのみ）
 class Result
   include _ParserResult
+  include _FormatterResult
   
-  type definition_hash = {
-    type: Symbol,
-    name: String,
-    methods: Array[Hash[Symbol, untyped]],
-    superclass: String?,
-    includes: Array[String],
-    extends: Array[String],
-    is_namespace: bool?
-  }
+  type definition_hash = Hash[Symbol, untyped]
 
-  def self.build: (Array[definition_hash] definitions) -> _ParserResult
+  def self.build: (Array[definition_hash] definitions) -> (_ParserResult | _FormatterResult)
 
   private
 

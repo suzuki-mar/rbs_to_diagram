@@ -1,8 +1,5 @@
 
-# Formatter用インターフェース定義（Formatterパッケージが所有）
-interface _FormatterResult
-  include _FormatterBase
-end
+
 
 interface _FormatterResultMethod
   def name: () -> String
@@ -14,15 +11,15 @@ interface _FormatterResultMethod
   def block: () -> Result::MethodNode::Block?
 end
 
-interface _Node
+interface _BaseNode
   def name: () -> String
   def type: () -> Symbol
   def is_a?: (Module) -> bool
   def is_namespace: () -> bool
 end
 
-interface _FormatterResultNode
-  include _Node
+interface _Node
+  include _BaseNode
   def methods_ordered_by_visibility_and_type: () -> Array[_FormatterResultMethod]
   def methods: () -> Array[_FormatterResultMethod]
   def relationships: () -> Array[Result::RelationshipNode]
@@ -30,8 +27,8 @@ interface _FormatterResultNode
   def extends: () -> Array[String]
 end
 
-interface _FormatterResultClassNode
-  include _FormatterResultNode
+interface _ClassNode
+  include _Node
   def superclass: () -> String?
 end
 
@@ -94,8 +91,9 @@ class Formatter
     private
 
     def build_structure: (_FormatterResult parser_result) -> Array[Hash[Symbol, untyped]]
-    def convert_class_definition_to_data: (_FormatterResultClassNode class_def) -> Definition
-    def convert_module_definition_to_data: (_FormatterResultNode module_def) -> Definition
+    def filter_nodes_for_json: (Array[_Node] nodes) -> Array[_Node]
+    def convert_class_definition_to_data: (_ClassNode class_def) -> Definition
+    def convert_module_definition_to_data: (_Node module_def) -> Definition
     def convert_method_to_data: (_FormatterResultMethod method) -> Definition
     def convert_block_to_data: (Result::MethodNode::Block block) -> Definition
     def convert_parameters_to_definitions: (Array[Parameter | Hash[Symbol, String]] parameters) -> Array[Hash[Symbol, String]]
@@ -110,16 +108,149 @@ class Formatter
 
     attr_reader parser_result: _FormatterResult
 
-    def build_class_diagrams: () -> Array[String]
-    def convert_node_to_mermaid: (_FormatterResultNode node) -> Array[String]
+    def prepare_diagram_data: () -> Hash[Symbol, untyped]
+    def build_class_diagrams: (Hash[Symbol, untyped] diagram_data) -> Array[String]
+    def build_class_diagrams_with_namespaces: () -> Array[String]
+    def build_class_diagrams_without_namespaces: () -> Array[String]
+    def convert_node_to_mermaid: (_Node node) -> Array[String]
+    def convert_node_to_mermaid_original: (_Node node) -> Array[String]
     def convert_class_to_mermaid: (Result::ClassNode class_def) -> Array[String]
     def convert_module_to_mermaid: (Result::ModuleNode module_def) -> Array[String]
     def convert_method_to_mermaid: (_FormatterResultMethod method, ?Symbol node_type) -> String
+    def convert_method_to_mermaid_original: (_FormatterResultMethod method, ?Symbol node_type) -> String
+    def convert_methods_to_mermaid: (Array[_FormatterResultMethod] methods, Symbol node_type) -> Array[String]
     def convert_module_method_to_mermaid: (Result::MethodNode method) -> String
     def convert_method_hash_to_mermaid: (Hash[Symbol, untyped] method_hash) -> String
     def format_parameters_from_hash: (Array[Hash[Symbol, untyped]] parameters) -> String
     def format_block_from_hash: (Hash[Symbol, untyped]? block_hash) -> String?
     def build_relationships: () -> Array[String]
+    def build_namespace_structure: () -> Array[String]
+    def build_namespace_structure_with_notes: () -> [Array[String], Array[String]]
+    def find_deepest_namespaces_with_classes: (Array[_Node] namespace_nodes, Array[_Node] all_classes) -> Hash[String, Array[_Node]]
+    def has_child_namespaces?: (String namespace_name, Array[_Node] all_namespaces) -> bool
+    def find_empty_namespaces: () -> Array[_Node]
+
+    # 新しいクラス群の型定義
+    class EntityBuilder
+      @parser_result: _FormatterResult
+      @namespace_collection: NamespaceCollection
+      @method_converter: Method
+
+      def initialize: (_FormatterResult parser_result, NamespaceCollection namespace_collection, Method method_converter) -> void
+      def build_entities: () -> Array[Entity::Base]
+
+      private
+
+      attr_reader parser_result: _FormatterResult
+      attr_reader namespace_collection: NamespaceCollection
+      attr_reader method_converter: Method
+
+      def build_namespace_entities_with_classes: () -> Array[Entity::Base]
+      def build_empty_namespace_entities: () -> Array[Entity::Base]
+      def build_regular_entities: () -> Array[Entity::Base]
+    end
+
+    class NamespaceCollection
+      @parser_result: _FormatterResult
+      @namespace_nodes: Array[_Node]
+      @all_classes: Array[_Node]
+
+      def initialize: (_FormatterResult parser_result) -> void
+      def namespaces?: () -> bool
+      def collect_namespaces_with_classes: () -> Hash[String, Array[_Node]]
+      def empty_namespaces: () -> Array[_Node]
+      def child_namespaces?: (String namespace_name) -> bool
+      def regular_nodes: () -> Array[_Node]
+
+      private
+
+      def collect_matching_namespace_nodes: (_Node class_node) -> Array[_Node]
+      def no_valid_namespace?: (Array[_Node] matching_namespaces) -> bool
+
+      private
+
+      attr_reader parser_result: _FormatterResult
+      attr_reader namespace_nodes: Array[_Node]
+      attr_reader all_classes: Array[_Node]
+    end
+
+    module Entity
+      def self.create_for_node: (_Node node, Method method_converter, ?has_namespaces: bool) -> Base
+
+      class Base
+        @name: String
+        @type: Symbol
+
+        attr_reader name: String
+        attr_reader type: Symbol
+
+        def initialize: (name: String, type: Symbol) -> void
+        def render: () -> Array[String]
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class Namespace < Base
+        @original_name: String
+        @classes: Array[NamespaceClass]
+
+        attr_reader original_name: String
+        attr_reader classes: Array[NamespaceClass]
+
+        def initialize: (name: String, original_name: String, classes: Array[NamespaceClass]) -> void
+        def render: () -> Array[String]
+        def render_note: () -> String
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class EmptyNamespace < Base
+        @original_name: String
+
+        attr_reader original_name: String
+
+        def initialize: (name: String, original_name: String) -> void
+        def render: () -> Array[String]
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class Class < Base
+        @methods: Array[String]
+
+        attr_reader methods: Array[String]
+
+        def initialize: (name: String, methods: Array[String]) -> void
+        def render: () -> Array[String]
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class Module < Base
+        @methods: Array[String]
+
+        attr_reader methods: Array[String]
+
+        def initialize: (name: String, methods: Array[String]) -> void
+        def render: () -> Array[String]
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class ModuleAsClass < Base
+        @methods: Array[String]
+
+        attr_reader methods: Array[String]
+
+        def initialize: (name: String, methods: Array[String]) -> void
+        def render: () -> Array[String]
+        def render_with_context: (has_namespaces: bool) -> Hash[Symbol, Array[String]]
+      end
+
+      class NamespaceClass < Base
+        @methods: Array[String]
+
+        attr_reader methods: Array[String]
+
+        def initialize: (name: String, methods: Array[String]) -> void
+        def render: () -> void
+      end
+    end
 
     class Syntax
       def self.class_diagram_header: () -> String
@@ -133,6 +264,9 @@ class Formatter
       def self.format_param: (Parameter param) -> String?
       def self.format_block_signature: (Result::MethodNode::Block? block) -> String
       def self.build_relationships: (Array[Result::RelationshipNode] relationships) -> Array[String]
+      def self.namespace_definition: (String namespace_name, Array[String] content) -> Array[String]
+      def self.empty_namespace_definition: (String namespace_name) -> Array[String]
+      def self.note_for_namespace: (String flattened_name, String original_path) -> String
 
       private
 

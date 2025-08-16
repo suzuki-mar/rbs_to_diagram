@@ -24,6 +24,26 @@ class Formatter
         ]
       end
 
+      def self.namespace_definition(namespace_name, content)
+        [
+          "namespace #{namespace_name} {",
+          *content.map { |line| "    #{line}" },
+          '}'
+        ]
+      end
+
+      def self.empty_namespace_definition(namespace_name)
+        [
+          "class #{namespace_name} {",
+          '    <<namespace>>',
+          '}'
+        ]
+      end
+
+      def self.note_for_namespace(flattened_name, original_path)
+        "note for #{flattened_name} \"Namespace: #{original_path}\""
+      end
+
       def self.inheritance_arrow(parent, child, label = nil)
         label_part = label ? " : \"#{label}\"" : ''
         "    #{parent} <|-- #{child}#{label_part}"

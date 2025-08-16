@@ -1,13 +1,13 @@
 classDiagram
 namespace MyApp_Models {
     class User {
-        +initialize(String name) void
+        +initialize(name: String) void
         +name() String
     }
 }
 
 class Authenticatable {
-    +authenticate(String password) bool
+    +authenticate(password: String) bool
     +logout() void
 }
 

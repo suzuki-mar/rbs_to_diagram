@@ -41,12 +41,13 @@ class Result
     end
 
     def add_inheritance_relationship(class_node)
-      return unless class_node.superclass
+      superclass = class_node.superclass
+      return unless superclass
 
       inheritance_node = RelationshipNode.new(
-        name: "#{class_node.superclass}_to_#{class_node.name}",
+        name: "#{superclass}_to_#{class_node.name}",
         relationship_type: :inheritance,
-        from: class_node.superclass,
+        from: superclass,
         to: class_node.name
       )
       class_node.add_relationship(inheritance_node)
