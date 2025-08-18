@@ -1,0 +1,116 @@
+# ドメインモデル・サービス層定義
+module BlogApp
+  module Models
+    class BaseModel
+      attr_reader id: Integer
+      attr_reader created_at: Time
+      attr_reader updated_at: Time
+      def initialize: (id: Integer, created_at: Time, updated_at: Time) -> void
+      def save: () -> bool
+      def destroy: () -> bool
+      private
+      def validate: () -> bool
+    end
+
+    class User < BaseModel
+      include Authenticatable
+      include Trackable
+      attr_reader name: String
+      attr_reader email: String
+      attr_reader posts: Array[Post]
+      attr_reader profile: UserProfile?
+      def initialize: (id: Integer, name: String, email: String, created_at: Time, updated_at: Time) -> void
+      def create_post: (title: String, content: String, ?tags: Array[String]) -> Post
+      def published_posts: () -> Array[Post]
+      def draft_posts: () -> Array[Post]
+      def find_posts: (status: :published) -> Array[Post]
+                    | (status: :draft) -> Array[Post]
+                    | (tag: String) -> Array[Post]
+      def filter_by: [T] (Array[T] items) { (T) -> bool } -> Array[T]
+    end
+
+    class Post < BaseModel
+      attr_reader title: String
+      attr_reader content: String
+      attr_reader status: (:draft | :published | :archived)
+      attr_reader author: User
+      attr_reader tags: Array[Tag]
+      attr_reader comments: Array[Comment]
+      def initialize: (
+        id: Integer,
+        title: String,
+        content: String,
+        author: User,
+        created_at: Time,
+        updated_at: Time,
+        ?status: (:draft | :published | :archived)
+      ) -> void
+      def publish: () -> bool
+      def archive: () -> bool
+      def add_tag: (Tag tag) -> void
+      def remove_tag: (Tag tag) -> void
+      def update_content: (
+        String new_content,
+        ?String new_title,
+        *String additional_tags,
+        **String metadata
+      ) { (String old_content, String new_content) -> void } -> bool
+      def self.search: (query: String, ?limit: Integer, ?offset: Integer) -> Array[Post]
+      def self.by_status: (status: (:draft | :published | :archived)) -> Array[Post]
+    end
+
+    class Comment < BaseModel
+      attr_reader content: String
+      attr_reader author: User
+      attr_reader post: Post
+      attr_reader parent: Comment?
+      attr_reader replies: Array[Comment]
+      def initialize: (
+        id: Integer,
+        content: String,
+        author: User,
+        post: Post,
+        created_at: Time,
+        updated_at: Time,
+        ?parent: Comment
+      ) -> void
+      def add_reply: (content: String, author: User) -> Comment
+      def is_reply?: () -> bool
+    end
+
+    class Tag < BaseModel
+      attr_reader name: String
+      attr_reader posts: Array[Post]
+      def initialize: (id: Integer, name: String, created_at: Time, updated_at: Time) -> void
+      def post_count: () -> Integer
+    end
+
+    class UserProfile
+      attr_reader user: User
+      attr_reader bio: String?
+      attr_reader avatar_url: String?
+      attr_reader social_links: Hash[String, String]
+      def initialize: (user: User, ?bio: String, ?avatar_url: String) -> void
+      def update_bio: (String bio) -> void
+      def add_social_link: (platform: String, url: String) -> void
+    end
+  end
+
+  module Services
+    class PostService
+      def initialize: (user_repository: Models::User, post_repository: Models::Post) -> void
+      def create_post_with_tags: (user: Models::User, title: String, content: String, tag_names: Array[String]) -> Models::Post
+      def publish_scheduled_posts: () -> Array[Models::Post]
+      private
+      def find_or_create_tags: (Array[String] tag_names) -> Array[Models::Tag]
+    end
+
+    class NotificationService
+      include Observable
+      def notify_new_post: (post: Models::Post) -> void
+      def notify_new_comment: (comment: Models::Comment) -> void
+      def send_email: (to: String, subject: String, body: String) -> bool
+      def send_async: (notification_type: Symbol, **untyped options) -> void
+    end
+  end
+end

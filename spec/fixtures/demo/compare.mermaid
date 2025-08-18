@@ -1,0 +1,128 @@
+classDiagram
+namespace BlogApp_Models {
+    class BaseModel {
+        +id() Integer
+        +created_at() Time
+        +updated_at() Time
+        +initialize(id: Integer, created_at: Time, updated_at: Time) void
+        +save() bool
+        +destroy() bool
+        -validate() bool
+    }
+    class User {
+        +name() String
+        +email() String
+        +posts() Array[Post]
+        +profile() UserProfile?
+        +initialize(id: Integer, name: String, email: String, created_at: Time, updated_at: Time) void
+        +create_post(title: String, content: String, tags?: Array[String]) Post
+        +published_posts() Array[Post]
+        +draft_posts() Array[Post]
+        +find_posts(status: :published) Array[Post]
+        +filter_by(items: Array[T]) &block(T) -> bool Array[T]
+    }
+    class Post {
+        +<<static>> search(query: String, limit?: Integer, offset?: Integer) Array[Post]
+        +<<static>> by_status(status: :draft | :published | :archived) Array[Post]
+        +title() String
+        +content() String
+        +status() :draft | :published | :archived
+        +author() User
+        +tags() Array[Tag]
+        +comments() Array[Comment]
+        +initialize(id: Integer, title: String, content: String, author: User, created_at: Time, updated_at: Time, status?: :draft | :published | :archived) void
+        +publish() bool
+        +archive() bool
+        +add_tag(tag: Tag) void
+        +remove_tag(tag: Tag) void
+        +update_content(new_content: String, new_title?: String, *additional_tags: String, **metadata: String) &block(String, String) -> void bool
+    }
+    class Comment {
+        +content() String
+        +author() User
+        +post() Post
+        +parent() Comment?
+        +replies() Array[Comment]
+        +initialize(id: Integer, content: String, author: User, post: Post, created_at: Time, updated_at: Time, parent?: Comment) void
+        +add_reply(content: String, author: User) Comment
+        +is_reply?() bool
+    }
+    class Tag {
+        +name() String
+        +posts() Array[Post]
+        +initialize(id: Integer, name: String, created_at: Time, updated_at: Time) void
+        +post_count() Integer
+    }
+    class UserProfile {
+        +user() User
+        +bio() String?
+        +avatar_url() String?
+        +social_links() Hash[String, String]
+        +initialize(user: User, bio?: String, avatar_url?: String) void
+        +update_bio(bio: String) void
+        +add_social_link(platform: String, url: String) void
+    }
+}
+namespace BlogApp_Services {
+    class PostService {
+        +initialize(user_repository: Models::User, post_repository: Models::Post) void
+        +create_post_with_tags(user: Models::User, title: String, content: String, tag_names: Array[String]) Models::Post
+        +publish_scheduled_posts() Array[Models::Post]
+        -find_or_create_tags(tag_names: Array[String]) Array[Models::Tag]
+    }
+    class NotificationService {
+        +notify_new_post(post: Models::Post) void
+        +notify_new_comment(comment: Models::Comment) void
+        +send_email(to: String, subject: String, body: String) bool
+        +send_async(notification_type: Symbol, **options: untyped) void
+    }
+}
+
+    class Logger {
+        +<<static>> info(message: String) void
+        +<<static>> error(message: String, exception?: Exception) void
+        +<<static>> debug(message: String) void
+    }
+
+    class Configuration {
+        +database_url() String
+        +redis_url() String
+        +email_settings() Hash[String, String]
+        +initialize() void
+        +load_from_file(file_path: String) void
+        +validate() bool
+    }
+
+class Authenticatable {
+    +authenticate(password: String) bool
+    +logout() void
+    +reset_password(new_password: String) bool
+}
+
+class Trackable {
+    +track_activity(action: String, metadata?: Hash[String, untyped]) void
+    +last_activity() Time?
+}
+
+class Observable {
+    +add_observer(observer: untyped) void
+    +remove_observer(observer: untyped) void
+    +notify_observers(*args: untyped) void
+}
+
+note for BlogApp_Models "Namespace: BlogApp::Models"
+note for BlogApp_Services "Namespace: BlogApp::Services"
+
+    %% 関係性の定義
+    BaseModel <|-- BlogApp_Models_User : "継承"
+    BlogApp_Models_User --> UserProfile : "委譲"
+    BaseModel <|-- BlogApp_Models_Post : "継承"
+    BlogApp_Models_Post --> User : "委譲"
+    BaseModel <|-- BlogApp_Models_Comment : "継承"
+    BlogApp_Models_Comment --> User : "委譲"
+    BlogApp_Models_Comment --> Post : "委譲"
+    BlogApp_Models_Comment --> Comment : "委譲"
+    BaseModel <|-- BlogApp_Models_Tag : "継承"
+    BlogApp_Models_UserProfile --> User : "委譲"
+    BlogApp_Models_UserProfile --> String : "委譲"
+    BlogApp_Models_UserProfile --> String : "委譲"

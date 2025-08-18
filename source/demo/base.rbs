@@ -1,7 +1,0 @@
-# 基本となるクラス
-class BaseEntity
-  attr_reader id: Integer
-  
-  def initialize: (id: Integer) -> void
-  def simple_method: () -> String
-end
