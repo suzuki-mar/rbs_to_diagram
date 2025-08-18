@@ -1,0 +1,55 @@
+# 複数の関連ファイルのテスト用RBSファイル
+
+# ネームスペースとして使用されるmodule
+module MyApp
+  module Models
+    class User
+      def initialize: (String name) -> void
+      def name: () -> String
+    end
+  end
+end
+
+# 通常のmodule（メソッドのみ）
+module Authenticatable
+  def authenticate: (String password) -> bool
+  def logout: () -> void
+end
+
+# 空のmodule（ネームスペースとして判定）
+module EmptyNamespace
+end
+
+# 基本となるクラス
+class BaseEntity
+  attr_reader id: Integer
+  
+  def initialize: (id: Integer) -> void
+end
+
+# 継承クラス
+class User < BaseEntity
+  attr_reader name: String
+  attr_reader settings: UserSettings
+  
+  def initialize: (id: Integer, name: String) -> void
+end
+
+# 委譲先のクラス
+class UserSettings
+  attr_reader theme: String
+  
+  def initialize: (theme: String) -> void
+end
+
+# 関係しないクラス
+class Logger
+  attr_reader level: String
+  
+  def initialize: (level: String) -> void
+end
+
+# シンプルなクラス
+class SimpleClass
+  def simple_method: () -> String
+end

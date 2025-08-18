@@ -8,16 +8,18 @@ class Formatter
       end
 
       def self.class_definition(class_name, methods)
+        safe_name = class_name.gsub(/\?$/, '')
         [
-          "    class #{class_name} {",
+          "    class #{safe_name} {",
           *methods.map { |method| "        #{method}" },
           '    }'
         ]
       end
 
       def self.module_definition(module_name, methods)
+        safe_name = module_name.gsub(/\?$/, '')
         [
-          "    class #{module_name} {",
+          "    class #{safe_name} {",
           '        <<module>>',
           *methods.map { |method| "        #{method}" },
           '    }'
@@ -25,33 +27,40 @@ class Formatter
       end
 
       def self.namespace_definition(namespace_name, content)
+        safe_name = namespace_name.gsub(/\?$/, '')
         [
-          "namespace #{namespace_name} {",
+          "namespace #{safe_name} {",
           *content.map { |line| "    #{line}" },
           '}'
         ]
       end
 
       def self.empty_namespace_definition(namespace_name)
+        safe_name = namespace_name.gsub(/\?$/, '')
         [
-          "class #{namespace_name} {",
+          "class #{safe_name} {",
           '    <<namespace>>',
           '}'
         ]
       end
 
       def self.note_for_namespace(flattened_name, original_path)
-        "note for #{flattened_name} \"Namespace: #{original_path}\""
+        safe_name = flattened_name.gsub(/\?$/, '')
+        "note for #{safe_name} \"Namespace: #{original_path}\""
       end
 
       def self.inheritance_arrow(parent, child, label = nil)
         label_part = label ? " : \"#{label}\"" : ''
-        "    #{parent} <|-- #{child}#{label_part}"
+        flat_parent = parent.gsub('::', '_').gsub(/\?$/, '')
+        flat_child = child.gsub('::', '_').gsub(/\?$/, '')
+        "    #{flat_parent} <|-- #{flat_child}#{label_part}"
       end
 
       def self.delegation_arrow(delegator, delegatee, label = nil)
         label_part = label ? " : \"#{label}\"" : ''
-        "    #{delegator} --> #{delegatee}#{label_part}"
+        flat_delegator = delegator.gsub('::', '_').gsub(/\?$/, '')
+        flat_delegatee = delegatee.gsub('::', '_').gsub(/\?$/, '')
+        "    #{flat_delegator} --> #{flat_delegatee}#{label_part}"
       end
 
       def self.comment(text)

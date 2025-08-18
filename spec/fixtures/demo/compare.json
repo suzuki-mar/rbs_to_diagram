@@ -1,0 +1,1884 @@
+{
+  "structure": [
+    {
+      "type": "class",
+      "name": "BlogApp::Models::BaseModel",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "id",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Integer",
+          "overloads": []
+        },
+        {
+          "name": "created_at",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Time",
+          "overloads": []
+        },
+        {
+          "name": "updated_at",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Time",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "Integer",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "created_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "updated_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "created_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "updated_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "save",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "destroy",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "validate",
+          "method_type": "instance",
+          "visibility": "private",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Models::User",
+      "superclass": "BaseModel",
+      "methods": [
+        {
+          "name": "name",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "email",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Post]",
+          "overloads": []
+        },
+        {
+          "name": "profile",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "UserProfile?",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "Integer",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "email",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "created_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "updated_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "email",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "created_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "updated_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "create_post",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "title",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "content",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "tags",
+              "type": "Array[String]",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "Post",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "title",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "content",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "tags",
+                  "type": "Array[String]",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "Post"
+            }
+          ]
+        },
+        {
+          "name": "published_posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Post]",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Array[Post]"
+            }
+          ]
+        },
+        {
+          "name": "draft_posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Post]",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Array[Post]"
+            }
+          ]
+        },
+        {
+          "name": "find_posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "status",
+              "type": ":published",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "Array[Post]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "status",
+                  "type": ":published",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Array[Post]"
+            },
+            {
+              "parameters": [
+                {
+                  "name": "status",
+                  "type": ":draft",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Array[Post]"
+            },
+            {
+              "parameters": [
+                {
+                  "name": "tag",
+                  "type": "String",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Array[Post]"
+            }
+          ]
+        },
+        {
+          "name": "filter_by",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "items",
+              "type": "Array[T]",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "Array[T]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "items",
+                  "type": "Array[T]",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "Array[T]",
+              "block": {
+                "parameters": [
+                  {
+                    "name": "block_arg0",
+                    "type": "T",
+                    "kind": "block_parameter"
+                  }
+                ],
+                "return_type": "bool"
+              }
+            }
+          ],
+          "block": {
+            "parameters": [
+              {
+                "name": "block_arg0",
+                "type": "T",
+                "kind": "block_parameter"
+              }
+            ],
+            "return_type": "bool"
+          }
+        }
+      ],
+      "includes": [
+        "Authenticatable",
+        "Trackable"
+      ],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Models::Post",
+      "superclass": "BaseModel",
+      "methods": [
+        {
+          "name": "title",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "content",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "status",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": ":draft | :published | :archived",
+          "overloads": []
+        },
+        {
+          "name": "author",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "User",
+          "overloads": []
+        },
+        {
+          "name": "tags",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Tag]",
+          "overloads": []
+        },
+        {
+          "name": "comments",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Comment]",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "Integer",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "title",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "content",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "author",
+              "type": "User",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "created_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "updated_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "status",
+              "type": ":draft | :published | :archived",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "title",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "content",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "author",
+                  "type": "User",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "created_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "updated_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "status",
+                  "type": ":draft | :published | :archived",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "publish",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "archive",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "add_tag",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "tag",
+              "type": "Tag",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "tag",
+                  "type": "Tag",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "remove_tag",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "tag",
+              "type": "Tag",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "tag",
+                  "type": "Tag",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "update_content",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "new_content",
+              "type": "String",
+              "kind": "required_positional"
+            },
+            {
+              "name": "new_title",
+              "type": "String",
+              "kind": "optional_positional"
+            },
+            {
+              "name": "additional_tags",
+              "type": "String",
+              "kind": "rest_positional"
+            },
+            {
+              "name": "metadata",
+              "type": "String",
+              "kind": "rest_keyword"
+            }
+          ],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "new_content",
+                  "type": "String",
+                  "kind": "required_positional"
+                },
+                {
+                  "name": "new_title",
+                  "type": "String",
+                  "kind": "optional_positional"
+                },
+                {
+                  "name": "additional_tags",
+                  "type": "String",
+                  "kind": "rest_positional"
+                },
+                {
+                  "name": "metadata",
+                  "type": "String",
+                  "kind": "rest_keyword"
+                }
+              ],
+              "return_type": "bool",
+              "block": {
+                "parameters": [
+                  {
+                    "name": "old_content",
+                    "type": "String",
+                    "kind": "block_parameter"
+                  },
+                  {
+                    "name": "new_content",
+                    "type": "String",
+                    "kind": "block_parameter"
+                  }
+                ],
+                "return_type": "void"
+              }
+            }
+          ],
+          "block": {
+            "parameters": [
+              {
+                "name": "old_content",
+                "type": "String",
+                "kind": "block_parameter"
+              },
+              {
+                "name": "new_content",
+                "type": "String",
+                "kind": "block_parameter"
+              }
+            ],
+            "return_type": "void"
+          }
+        },
+        {
+          "name": "search",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "limit",
+              "type": "Integer",
+              "kind": "optional_keyword"
+            },
+            {
+              "name": "offset",
+              "type": "Integer",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "Array[Post]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "query",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "limit",
+                  "type": "Integer",
+                  "kind": "optional_keyword"
+                },
+                {
+                  "name": "offset",
+                  "type": "Integer",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "Array[Post]"
+            }
+          ]
+        },
+        {
+          "name": "by_status",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "status",
+              "type": ":draft | :published | :archived",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "Array[Post]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "status",
+                  "type": ":draft | :published | :archived",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Array[Post]"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Models::Comment",
+      "superclass": "BaseModel",
+      "methods": [
+        {
+          "name": "content",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "author",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "User",
+          "overloads": []
+        },
+        {
+          "name": "post",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Post",
+          "overloads": []
+        },
+        {
+          "name": "parent",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Comment?",
+          "overloads": []
+        },
+        {
+          "name": "replies",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Comment]",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "Integer",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "content",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "author",
+              "type": "User",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "post",
+              "type": "Post",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "created_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "updated_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "parent",
+              "type": "Comment",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "content",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "author",
+                  "type": "User",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "post",
+                  "type": "Post",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "created_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "updated_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "parent",
+                  "type": "Comment",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "add_reply",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "content",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "author",
+              "type": "User",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "Comment",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "content",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "author",
+                  "type": "User",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Comment"
+            }
+          ]
+        },
+        {
+          "name": "is_reply?",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Models::Tag",
+      "superclass": "BaseModel",
+      "methods": [
+        {
+          "name": "name",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Post]",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "id",
+              "type": "Integer",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "created_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "updated_at",
+              "type": "Time",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": "Integer",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "created_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "updated_at",
+                  "type": "Time",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "post_count",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Integer",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Integer"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Models::UserProfile",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "user",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "User",
+          "overloads": []
+        },
+        {
+          "name": "bio",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String?",
+          "overloads": []
+        },
+        {
+          "name": "avatar_url",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String?",
+          "overloads": []
+        },
+        {
+          "name": "social_links",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Hash[String, String]",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "user",
+              "type": "User",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "bio",
+              "type": "String",
+              "kind": "optional_keyword"
+            },
+            {
+              "name": "avatar_url",
+              "type": "String",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "user",
+                  "type": "User",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "bio",
+                  "type": "String",
+                  "kind": "optional_keyword"
+                },
+                {
+                  "name": "avatar_url",
+                  "type": "String",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "update_bio",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "bio",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "bio",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "add_social_link",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "platform",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "url",
+              "type": "String",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "platform",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "url",
+                  "type": "String",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Services::PostService",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "user_repository",
+              "type": "Models::User",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "post_repository",
+              "type": "Models::Post",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "user_repository",
+                  "type": "Models::User",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "post_repository",
+                  "type": "Models::Post",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "create_post_with_tags",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "user",
+              "type": "Models::User",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "title",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "content",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "tag_names",
+              "type": "Array[String]",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "Models::Post",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "user",
+                  "type": "Models::User",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "title",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "content",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "tag_names",
+                  "type": "Array[String]",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "Models::Post"
+            }
+          ]
+        },
+        {
+          "name": "publish_scheduled_posts",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Array[Models::Post]",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Array[Models::Post]"
+            }
+          ]
+        },
+        {
+          "name": "find_or_create_tags",
+          "method_type": "instance",
+          "visibility": "private",
+          "parameters": [
+            {
+              "name": "tag_names",
+              "type": "Array[String]",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "Array[Models::Tag]",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "tag_names",
+                  "type": "Array[String]",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "Array[Models::Tag]"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "BlogApp::Services::NotificationService",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "notify_new_post",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "post",
+              "type": "Models::Post",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "post",
+                  "type": "Models::Post",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "notify_new_comment",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "comment",
+              "type": "Models::Comment",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "comment",
+                  "type": "Models::Comment",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "send_email",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "to",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "subject",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "body",
+              "type": "String",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "to",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "subject",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "body",
+                  "type": "String",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "send_async",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "notification_type",
+              "type": "Symbol",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "options",
+              "type": "untyped",
+              "kind": "rest_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "notification_type",
+                  "type": "Symbol",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "options",
+                  "type": "untyped",
+                  "kind": "rest_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        }
+      ],
+      "includes": [
+        "Observable"
+      ],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "Logger",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "info",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "error",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "String",
+              "kind": "required_positional"
+            },
+            {
+              "name": "exception",
+              "type": "Exception",
+              "kind": "optional_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": "String",
+                  "kind": "required_positional"
+                },
+                {
+                  "name": "exception",
+                  "type": "Exception",
+                  "kind": "optional_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "debug",
+          "method_type": "class",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "class",
+      "name": "Configuration",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "database_url",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "redis_url",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "String",
+          "overloads": []
+        },
+        {
+          "name": "email_settings",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Hash[String, String]",
+          "overloads": []
+        },
+        {
+          "name": "initialize",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "load_from_file",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "file_path",
+              "type": "String",
+              "kind": "required_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "file_path",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "validate",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "bool"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": []
+    },
+    {
+      "type": "module",
+      "name": "BlogApp",
+      "superclass": null,
+      "methods": [],
+      "includes": [],
+      "extends": [],
+      "is_namespace": true
+    },
+    {
+      "type": "module",
+      "name": "BlogApp::Models",
+      "superclass": null,
+      "methods": [],
+      "includes": [],
+      "extends": [],
+      "is_namespace": true
+    },
+    {
+      "type": "module",
+      "name": "BlogApp::Services",
+      "superclass": null,
+      "methods": [],
+      "includes": [],
+      "extends": [],
+      "is_namespace": true
+    },
+    {
+      "type": "module",
+      "name": "Authenticatable",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "authenticate",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "password",
+              "type": "String",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "password",
+                  "type": "String",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "bool"
+            }
+          ]
+        },
+        {
+          "name": "logout",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "reset_password",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "new_password",
+              "type": "String",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "bool",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "new_password",
+                  "type": "String",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "bool"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": [],
+      "is_namespace": false
+    },
+    {
+      "type": "module",
+      "name": "Trackable",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "track_activity",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "action",
+              "type": "String",
+              "kind": "required_keyword"
+            },
+            {
+              "name": "metadata",
+              "type": "Hash[String, untyped]",
+              "kind": "optional_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "action",
+                  "type": "String",
+                  "kind": "required_keyword"
+                },
+                {
+                  "name": "metadata",
+                  "type": "Hash[String, untyped]",
+                  "kind": "optional_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "last_activity",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [],
+          "return_type": "Time?",
+          "overloads": [
+            {
+              "parameters": [],
+              "return_type": "Time?"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": [],
+      "is_namespace": false
+    },
+    {
+      "type": "module",
+      "name": "Observable",
+      "superclass": null,
+      "methods": [
+        {
+          "name": "add_observer",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "observer",
+              "type": "untyped",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "observer",
+                  "type": "untyped",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "remove_observer",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "observer",
+              "type": "untyped",
+              "kind": "required_keyword"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "observer",
+                  "type": "untyped",
+                  "kind": "required_keyword"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        },
+        {
+          "name": "notify_observers",
+          "method_type": "instance",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "args",
+              "type": "untyped",
+              "kind": "rest_positional"
+            }
+          ],
+          "return_type": "void",
+          "overloads": [
+            {
+              "parameters": [
+                {
+                  "name": "args",
+                  "type": "untyped",
+                  "kind": "rest_positional"
+                }
+              ],
+              "return_type": "void"
+            }
+          ]
+        }
+      ],
+      "includes": [],
+      "extends": [],
+      "is_namespace": false
+    }
+  ]
+}

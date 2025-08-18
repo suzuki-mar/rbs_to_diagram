@@ -9,36 +9,25 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
 
   where(:target_file, :output_file, :compare_file) do
     [
-
       [
-        'spec/fixtures/target_method_comprehensive_class.rbs',
-        'spec/output/target_method_comprehensive_class.mermaid',
-        'spec/fixtures/compare_method_comprehensive_class.mermaid'
+        'spec/fixtures/target/target_complex_single.rbs',
+        'spec/output/target_complex_single.mermaid',
+        'spec/fixtures/compare/compare_complex_single.mermaid'
       ],
       [
-        'spec/fixtures/target_method_comprehensive_class.rbs',
-        'spec/output/target_method_comprehensive_class.json',
-        'spec/fixtures/compare_method_comprehensive_class.json'
+        'spec/fixtures/target/target_complex_single.rbs',
+        'spec/output/target_complex_single.json',
+        'spec/fixtures/compare/compare_complex_single.json'
       ],
       [
-        'spec/fixtures/target_related_classes.rbs',
-        'spec/output/target_related_classes.mermaid',
-        'spec/fixtures/compare_related_classes.mermaid'
+        'spec/fixtures/target/target_related_system.rbs',
+        'spec/output/target_related_system.mermaid',
+        'spec/fixtures/compare/compare_related_system.mermaid'
       ],
       [
-        'spec/fixtures/target_module.rbs',
-        'spec/output/target_module.mermaid',
-        'spec/fixtures/compare_module.mermaid'
-      ],
-      [
-        'spec/fixtures/target_namespace.rbs',
-        'spec/output/target_namespace.json',
-        'spec/fixtures/compare_namespace.json'
-      ],
-      [
-        'spec/fixtures/target_namespace.rbs',
-        'spec/output/target_namespace.mermaid',
-        'spec/fixtures/compare_namespace.mermaid'
+        'spec/fixtures/target/target_related_system.rbs',
+        'spec/output/target_related_system.json',
+        'spec/fixtures/compare/compare_related_system.json'
       ]
     ]
   end

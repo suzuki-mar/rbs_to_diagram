@@ -31,15 +31,8 @@ class Formatter
     end
 
     def filter_nodes_for_json(nodes)
-      # ネームスペース内のクラスを除外
-      # ネストしたネームスペース（MyApp::Models）を除外
-      # ルートレベルのネームスペース（MyApp）、通常のモジュール、空のネームスペースは含める
-      nodes.reject do |node|
-        # ネームスペース内のクラスを除外
-        (node.is_a?(Result::ClassNode) && node.name.include?('::')) ||
-          # ネストしたネームスペースを除外（::を含むネームスペース）
-          (node.is_a?(Result::ModuleNode) && node.is_namespace && node.name.include?('::'))
-      end
+      # 全ての構造体を含める（フィルタリングしない）
+      nodes
     end
 
     def convert_module_definition_to_data(module_def)

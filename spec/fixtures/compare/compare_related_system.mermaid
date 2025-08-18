@@ -1,21 +1,46 @@
 classDiagram
+namespace MyApp_Models {
+    class User {
+        +initialize(name: String) void
+        +name() String
+    }
+}
+
     class BaseEntity {
         +id() Integer
         +initialize(id: Integer) void
     }
+
     class User {
         +name() String
         +settings() UserSettings
         +initialize(id: Integer, name: String) void
     }
+
     class UserSettings {
         +theme() String
         +initialize(theme: String) void
     }
+
     class Logger {
         +level() String
         +initialize(level: String) void
     }
+
+    class SimpleClass {
+        +simple_method() String
+    }
+
+class Authenticatable {
+    +authenticate(password: String) bool
+    +logout() void
+}
+
+class EmptyNamespace {
+    <<namespace>>
+}
+
+note for MyApp_Models "Namespace: MyApp::Models"
 
     %% 関係性の定義
     BaseEntity <|-- User : "継承"

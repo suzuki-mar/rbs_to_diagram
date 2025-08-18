@@ -1,0 +1,32 @@
+# サポーティングコンポーネント定義
+module Authenticatable
+  def authenticate: (password: String) -> bool
+  def logout: () -> void
+  def reset_password: (new_password: String) -> bool
+end
+
+module Trackable
+  def track_activity: (action: String, ?metadata: Hash[String, untyped]) -> void
+  def last_activity: () -> Time?
+end
+
+module Observable
+  def add_observer: (observer: untyped) -> void
+  def remove_observer: (observer: untyped) -> void
+  def notify_observers: (*untyped args) -> void
+end
+
+class Logger
+  def self.info: (String message) -> void
+  def self.error: (String message, ?Exception exception) -> void
+  def self.debug: (String message) -> void
+end
+
+class Configuration
+  attr_accessor database_url: String
+  attr_accessor redis_url: String
+  attr_accessor email_settings: Hash[String, String]
+  def initialize: () -> void
+  def load_from_file: (String file_path) -> void
+  def validate: () -> bool
+end
