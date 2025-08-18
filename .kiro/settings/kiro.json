@@ -1,7 +1,0 @@
-{
-  "autonomyMode": "autopilot",
-  "autoExecuteCommands": true,
-  "autoExecuteTests": true,
-  "autoApproveFileChanges": true,
-  "requireApproval": false
-}
