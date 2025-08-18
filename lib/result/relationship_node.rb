@@ -4,6 +4,9 @@ require_relative 'node'
 
 class Result
   class RelationshipNode < Node
+    # @relationship_type: Symbol
+    # @from: String
+    # @to: String
     attr_reader :relationship_type, :from, :to
 
     def initialize(name:, relationship_type:, from:, to:)

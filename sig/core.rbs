@@ -20,11 +20,13 @@ end
 # Parser用インターフェース
 interface _ParserResult
   include _BaseResult
+  def each: () { (_Node) -> void } -> void
+  def namespace_entity_types: () -> Array[Symbol]?
 end
 
 # Formatter用インターフェース
 interface _FormatterResult
-  include _BaseResult
+  include _ParserResult
 end
 
 
@@ -37,7 +39,7 @@ class Parameter
 
   def initialize: (name: String, type: String, kind: String) -> void
   def self.from_hash: (Hash[Symbol, String] hash) -> Parameter
-  def to_hash: () -> Hash[Symbol, String]
+  def to_hash: () -> { kind: String, name: String, type: String }
 end
 
 

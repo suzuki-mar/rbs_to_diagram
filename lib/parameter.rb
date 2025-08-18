@@ -18,6 +18,7 @@ class Parameter
       kind: hash[:kind]
     )
   end
+  # rubocop:enable Style/ClassMethodsDefinitions
 
   # Parameter オブジェクトをハッシュに変換
   def to_hash

@@ -10,6 +10,8 @@ class Result
   attr_reader definitions: Array[definition_hash]
   attr_reader parsed_at: Time
 
+
+
   # ベースノードクラス
   class Node
     attr_reader name: String
@@ -70,74 +72,70 @@ class Result
 
   # 関係性ノード
   class RelationshipNode < Result::Node
-    private
-
-    @relationship_type: Symbol
-    @from: String
-    @to: String
-
-    public
-
-    attr_reader relationship_type: Symbol
-    attr_reader from: String
-    attr_reader to: String
 
     %a{override}
     def initialize: (name: String, relationship_type: Symbol, from: String, to: String) -> void
     def inheritance?: () -> bool
     def delegation?: () -> bool
+    def relationship_type: () -> Symbol
+    def from: () -> String
+    def to: () -> String
+
+    private
+
+    @relationship_type: Symbol
+    @from: String
+    @to: String
   end
 
   # メソッドノード
   class MethodNode < Result::Node
     include _FormatterResultMethod
 
-    private
-
     @method_type: String
     @visibility: String
     @parameters: Array[Parameter]
     @return_type: String
     @overloads: Array[Hash[Symbol, untyped]]
-    @block: Result::MethodNode::Block?
+    @block: Result::BlockNode?
 
-    public
-
-
-
-    %a{override}
-    def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::MethodNode::Block?) -> void
+    def initialize: (name: String, method_type: String, visibility: String, parameters: Array[Parameter], return_type: String, ?overloads: Array[Hash[Symbol, untyped]], ?block: Result::BlockNode?) -> void
     def self.from_hash: (Hash[Symbol, untyped] method_hash) -> Result::MethodNode
 
     private
 
+    def param_signature: (Parameter param) -> String
     def self.build_parameters: (Array[Parameter | Hash[Symbol, String]] param_objects) -> Array[Parameter]
-    def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::MethodNode::Block?
+    def self.build_block: (Hash[Symbol, untyped]? block_hash) -> Result::BlockNode?
 
-    class Block
-      private
+  end
 
-      @parameters: Array[Parameter]
-      @return_type: String
+  # ブロックノード
+  class BlockNode < Result::Node
+    @parameters: Array[Parameter]
+    @return_type: String
 
-      public
+    attr_reader parameters: Array[Parameter]
+    attr_reader return_type: String
 
-      attr_reader parameters: Array[Parameter]
-      attr_reader return_type: String
-
-      def initialize: (parameters: Array[Parameter], return_type: String) -> void
-    end
+    def initialize: (parameters: Array[Parameter], return_type: String) -> void
+    def self.from_hash: (Hash[Symbol, untyped]? block_hash) -> Result::BlockNode?
   end
 
   # ノード構築を担当するクラス
   class NodeBuilder
+    @definition: definition_hash
+    
     def self.build_class_node: (definition_hash class_def) -> Result::ClassNode
     def self.build_module_node: (definition_hash module_def) -> Result::ModuleNode
-    def build_class_node: (definition_hash class_def) -> Result::ClassNode
-    def build_module_node: (definition_hash module_def) -> Result::ModuleNode
+    def initialize: (definition_hash definition) -> void
+    def build_class_node: () -> Result::ClassNode
+    def build_module_node: () -> Result::ModuleNode
 
     private
-
+    
+    attr_reader definition: definition_hash
+    
     def add_methods_to_node: ((Result::ClassNode | Result::ModuleNode) node, Array[Hash[Symbol, untyped]] methods) -> void
     def add_inheritance_relationship: (Result::ClassNode class_node) -> void
     def add_delegation_relationships: (Result::ClassNode class_node) -> void

@@ -1,0 +1,20 @@
+@startuml
+class ComprehensiveClass {
+    +{static} class_method(param: String) : ComprehensiveClass
+    +simple_method() : String
+    +method_with_args(name: String, age: Integer) : String
+    +method_with_optional(name: String, age?: Integer) : String
+    +method_with_keywords(name: String, age: Integer) : String
+    +method_with_optional_keywords(name: String, age?: Integer) : String
+    +method_with_block() &block(String) -> void : Array[String]
+    +method_with_splat(*args: String) : Array[String]
+    +method_with_rest_keywords(**options: String) : Hash[String, String]
+    +complex_method(name: String, age?: Integer, *tags: String, **options: String) &block(String) -> void : Hash[String, String]
+    +overloaded_method(arg0: String) : String
+    +union_return() : String | Integer | nil
+    +generic_return(value: T) : Array[T]
+    +void_method(message: String) : void
+    +public_method() : String
+    -private_method() : String
+}
+@enduml

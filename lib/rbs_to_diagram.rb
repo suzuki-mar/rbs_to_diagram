@@ -22,7 +22,7 @@ class RBSToDiagram
     rbs_files = collect_rbs_files(input_paths)
     parser_result = RBSParser.parse(rbs_files)
     format_type = determine_format_type(output_file)
-    output = Formatter.format(parser_result, format_type)
+    output = Formatter.format(parser_result, format_type: format_type)
 
     File.write(output_file, output)
 
@@ -65,6 +65,8 @@ class RBSToDiagram
     case File.extname(file_path)
     when '.mermaid'
       :mermaidjs
+    when '.plantuml'
+      :plantuml
     else
       :json # デフォルトはJSON（.jsonや未知の拡張子）
     end

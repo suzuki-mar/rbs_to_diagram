@@ -8,30 +8,36 @@ require_relative 'relationship_node'
 class Result
   class NodeBuilder
     def self.build_class_node(class_def)
-      new.build_class_node(class_def)
+      new(class_def).build_class_node
     end
 
     def self.build_module_node(module_def)
-      new.build_module_node(module_def)
+      new(module_def).build_module_node
     end
 
-    def build_class_node(class_def)
-      class_node = ClassNode.from_hash(class_def)
-      add_methods_to_node(class_node, class_def[:methods])
+    def initialize(definition)
+      @definition = definition
+    end
+
+    private_class_method :new
+
+    attr_reader :definition
+
+    def build_class_node
+      class_node = ClassNode.from_hash(definition)
+      add_methods_to_node(class_node, definition[:methods])
       add_inheritance_relationship(class_node)
       add_delegation_relationships(class_node)
       class_node
     end
 
-    def build_module_node(module_def)
-      module_node = ModuleNode.from_hash(module_def)
-      add_methods_to_node(module_node, module_def[:methods])
+    def build_module_node
+      module_node = ModuleNode.from_hash(definition)
+      add_methods_to_node(module_node, definition[:methods])
       add_include_relationships(module_node)
       add_extend_relationships(module_node)
       module_node
     end
-
-    private
 
     def add_methods_to_node(node, methods)
       methods.each do |method_hash|
