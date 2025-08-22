@@ -50,7 +50,7 @@ module Formatter
       namespace_entity_types = parser_result.namespace_entity_types || [] # : Array[Symbol]
 
       {
-        syntax: factory.syntax,
+        syntax: factory.syntax(parser_result),
         namespace_collection: namespace_collection,
         entity_builder: entity_builder,
         entities: entities,

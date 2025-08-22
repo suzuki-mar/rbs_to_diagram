@@ -4,7 +4,11 @@ module Formatter
       include Formatter::Diagram::DiagramDetail::_DiagramDetail
       @diagram_formatter: Formatter::Diagram
 
+      def check_has_namespaces: (_FormatterResult parser_result) -> bool
+
       private
+
+      def check_has_namespaces?: (_FormatterResult parser_result) -> bool
 
       attr_reader diagram_formatter: Formatter::Diagram
 
@@ -12,11 +16,15 @@ module Formatter
         include Formatter::Diagram::DiagramDetail::_Syntax
         @indentation: Formatter::Diagram::Indentation
         @entity_definition: EntityDefinition
+        @has_namespaces: bool
+
+        def initialize: (indentation: Formatter::Diagram::Indentation, has_namespaces: bool) -> void
 
         private
 
         attr_reader indentation: Formatter::Diagram::Indentation
         attr_reader entity_definition: EntityDefinition
+        attr_reader has_namespaces: bool
 
         def format_visibility: (String visibility) -> String
 
@@ -64,7 +72,38 @@ module Formatter
         end
         
         class NamespaceEntities
+          @namespace_collection: Formatter::Diagram::NamespaceCollection
+          @syntax: Syntax
+          @indentation: Formatter::Diagram::Indentation
+
           def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+          
+          def initialize: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> void
+          def build: () -> Array[untyped]
+
+          private
+
+          attr_reader namespace_collection: Formatter::Diagram::NamespaceCollection
+          attr_reader syntax: Syntax
+          attr_reader indentation: Formatter::Diagram::Indentation
+
+          def build_nested_namespace: (NamespaceName namespace_name, Array[untyped] classes) -> untyped
+          def build_class_entities: (Array[untyped] classes) -> Array[untyped]
+          def build_innermost_namespace: (Array[untyped] class_entities, NamespaceName namespace_name) -> untyped
+          def build_namespace_hierarchy: (untyped innermost_namespace, Array[NamespaceName] ancestor_names) -> untyped
+
+          class NamespaceName
+            @value: String
+
+            attr_reader value: String
+
+            def initialize: (String value) -> void
+            def ancestor_names: () -> Array[NamespaceName]
+            def position_of: (String part) -> Integer?
+            def namespace_path_until: (String part) -> Array[String]?
+            def basename: () -> String
+            def to_s: () -> String
+          end
         end
         
         class EmptyNamespaceEntities
@@ -157,12 +196,12 @@ module Formatter
         class Namespace < Base
           include _EntityRender
           @original_name: String
-          @classes: Array[NamespaceClass]
+          @classes: Array[untyped]
 
           attr_reader original_name: String
-          attr_reader classes: Array[NamespaceClass]
+          attr_reader classes: Array[untyped]
 
-          def initialize: (name: String, original_name: String, classes: Array[NamespaceClass], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+          def initialize: (name: String, original_name: String, classes: Array[untyped], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
 
           def render_note: () -> String
         end

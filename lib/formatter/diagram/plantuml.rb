@@ -21,16 +21,18 @@ module Formatter
         @diagram_formatter.format(parser_result)
       end
 
-      def syntax
+      def syntax(parser_result = nil)
         indentation = ::Formatter::Diagram::Indentation.new
-        Syntax.new(indentation: indentation)
+        has_namespaces = parser_result ? check_has_namespaces?(parser_result) : false
+        Syntax.new(indentation: indentation, has_namespaces: has_namespaces)
       end
 
       def entity_builder(parser_result, _namespace_collection)
         indentation = ::Formatter::Diagram::Indentation.new
         spec = NamespaceCollectionSpec.new
         plantuml_namespace_collection = ::Formatter::Diagram::NamespaceCollection.new(parser_result, spec: spec)
-        plantuml_syntax = Syntax.new(indentation: indentation)
+        has_namespaces = plantuml_namespace_collection.namespaces?
+        plantuml_syntax = Syntax.new(indentation: indentation, has_namespaces: has_namespaces)
 
         {
           namespace_entities: EntityBuilder::NamespaceEntities.build(plantuml_namespace_collection, plantuml_syntax,
@@ -49,6 +51,14 @@ module Formatter
 
       def trailing_newline?
         true
+      end
+
+      private
+
+      def check_has_namespaces?(parser_result)
+        spec = NamespaceCollectionSpec.new
+        namespace_collection = ::Formatter::Diagram::NamespaceCollection.new(parser_result, spec: spec)
+        namespace_collection.namespaces?
       end
     end
   end

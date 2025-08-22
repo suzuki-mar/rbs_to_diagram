@@ -21,7 +21,7 @@ module Formatter
         @diagram_formatter.format(parser_result)
       end
 
-      def syntax
+      def syntax(_parser_result = nil)
         indentation = ::Formatter::Diagram::Indentation.new(level: 1)
         Syntax.new(indentation: indentation)
       end

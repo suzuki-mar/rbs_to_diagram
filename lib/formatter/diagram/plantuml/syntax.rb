@@ -8,13 +8,20 @@ module Formatter
     class Syntax
       private attr_reader :indentation, :entity_definition
 
-      def initialize(indentation:)
+      def initialize(indentation:, has_namespaces:)
         @indentation = indentation
+        @has_namespaces = has_namespaces
         @entity_definition = EntityDefinition.new(indentation: indentation)
       end
 
       def header
-        '@startuml'
+        lines = ['@startuml']
+        if @has_namespaces
+          lines << 'set namespaceSeparator ::'
+          lines << 'skinparam classAttributeIconSize 0'
+          lines << ''
+        end
+        lines
       end
 
       def footer
