@@ -1,0 +1,190 @@
+module Formatter
+  class Diagram
+    class PlantUML
+      include Formatter::Diagram::DiagramDetail::_DiagramDetail
+      @diagram_formatter: Formatter::Diagram
+
+      private
+
+      attr_reader diagram_formatter: Formatter::Diagram
+
+      class Syntax
+        include Formatter::Diagram::DiagramDetail::_Syntax
+        @indentation: Formatter::Diagram::Indentation
+        @entity_definition: EntityDefinition
+
+        private
+
+        attr_reader indentation: Formatter::Diagram::Indentation
+        attr_reader entity_definition: EntityDefinition
+
+        def format_visibility: (String visibility) -> String
+
+        class EntityDefinition
+          @indentation: Formatter::Diagram::Indentation
+
+          def initialize: (indentation: Formatter::Diagram::Indentation) -> void
+          def class: (String, Array[String]) -> Array[String]
+          def module: (String, Array[String]) -> Array[String] 
+          def namespace: (String, Array[String]) -> Array[String]
+
+          private
+
+          attr_reader indentation: Formatter::Diagram::Indentation
+        end
+      end
+
+      class EntityBuilder
+        include Formatter::Diagram::DiagramDetail::_EntityBuilder
+        @parser_result: _FormatterResult
+        @namespace_collection: ::Formatter::Diagram::NamespaceCollection
+        @syntax: Syntax
+        @indentation: Formatter::Diagram::Indentation
+
+        def initialize: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> void
+
+        private
+
+        attr_reader parser_result: _FormatterResult
+        attr_reader namespace_collection: Formatter::Diagram::NamespaceCollection
+        attr_reader syntax: Syntax
+        attr_reader indentation: Formatter::Diagram::Indentation
+
+        def build_namespace_entities_with_classes: () -> Array[untyped]
+        def build_regular_entities: () -> Array[untyped]
+        def build_empty_namespace_entities: () -> Array[untyped]
+        def create_entity_for_node: (_Node node, has_namespaces: bool) -> untyped
+        
+        class RegularEntities
+          def self.build: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+          
+          private
+          
+          def self.create_entity_for_node: (_Node node, has_namespaces: bool, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> untyped
+        end
+        
+        class NamespaceEntities
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+        end
+        
+        class EmptyNamespaceEntities
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+        end
+      end
+
+      class NamespaceCollection
+        include Formatter::Diagram::DiagramDetail::_NamespaceCollection
+        @parser_result: _FormatterResult
+
+        def initialize: (_FormatterResult parser_result) -> void
+        def each: () { (_Node) -> void } -> void
+
+        private
+
+        attr_reader parser_result: _FormatterResult
+        
+        def collect_all_namespaces: () -> Array[_Node]
+      end
+
+      module Entity
+        interface _EntityRender
+          def render: () -> Array[String]
+        end
+        
+        class Base
+          @name: String
+          @type: Symbol
+          @syntax: Syntax
+          @indentation: Formatter::Diagram::Indentation
+
+          attr_reader name: String
+          attr_reader type: Symbol
+
+          def initialize: (name: String, type: Symbol, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+
+          def render: () -> Array[String]
+
+          private
+
+          attr_reader syntax: Syntax
+          attr_reader indentation: Formatter::Diagram::Indentation
+        end
+
+        class EmptyNamespace < Base
+          include _EntityRender
+          @original_name: String
+
+          attr_reader original_name: String
+
+          def initialize: (name: String, original_name: String, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+
+        end
+
+        class ClassEntity < Base
+          include _EntityRender
+          @methods: Array[String]
+          @indent: bool
+
+          attr_reader methods: Array[String]
+          attr_reader indent: bool
+
+          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?indent: bool) -> void          
+        end
+
+        class ModuleEntity < Base
+          include _EntityRender
+          @methods: Array[String]
+          @indent: bool
+
+          attr_reader methods: Array[String]
+          attr_reader indent: bool
+
+          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?indent: bool) -> void          
+        end
+
+        class ModuleAsClassEntity < Base
+          include _EntityRender
+          @methods: Array[String]
+          @indent: bool
+
+          attr_reader methods: Array[String]
+          attr_reader indent: bool
+
+          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?indent: bool) -> void
+
+        end
+
+        class Namespace < Base
+          include _EntityRender
+          @original_name: String
+          @classes: Array[NamespaceClass]
+
+          attr_reader original_name: String
+          attr_reader classes: Array[NamespaceClass]
+
+          def initialize: (name: String, original_name: String, classes: Array[NamespaceClass], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+
+          def render_note: () -> String
+        end
+
+        class NamespaceClass < Base
+          include _EntityRender
+          @methods: Array[String]
+
+          attr_reader methods: Array[String]
+
+          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+        end
+      end
+      
+      class NamespaceCollectionSpec
+        def initialize: () -> void
+        def namespace_nodes: (_FormatterResult parser_result) -> Array[_Node]
+        def pick_namespace_for_class: (_Node class_node, Array[_Node] namespace_nodes) -> _Node?
+        def empty_namespaces: (_FormatterResult parser_result, Array[_Node] namespace_nodes, Hash[String, Array[_Node]] namespaces_with_classes) -> Array[_Node]
+        def regular_nodes: (_FormatterResult parser_result) -> Array[_Node]
+      end
+
+    end
+  end
+end

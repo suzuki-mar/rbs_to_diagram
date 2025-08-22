@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class Formatter
-  class JSON
-    # JSON出力用の統一データクラス
-    class Definition
+# JSON出力用の統一データクラス
+module Formatter
+  class Json
+    class JsonDefinition
       attr_reader :type, :name, :superclass, :methods, :includes, :extends, :method_type, :visibility, :parameters,
                   :return_type, :overloads, :block, :kind, :is_namespace
 
@@ -68,7 +68,7 @@ class Formatter
         case value
         when Array
           value.map { |item| item.respond_to?(:to_hash) ? item.to_hash : item }
-        when Definition
+        when Formatter::Json::JsonDefinition
           value.to_hash
         else
           value

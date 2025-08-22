@@ -15,6 +15,8 @@ class Result
       )
     end
 
+    private_class_method :new
+
     def initialize(name:, includes: [], extends: [], is_namespace: false)
       super(name: name, type: :module)
       @includes = includes
