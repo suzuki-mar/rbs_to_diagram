@@ -20,7 +20,13 @@ module Formatter
         def render
           indent_str = indentation.to_s
           indentation.copy.increase
-          content = classes.flat_map(&:render)
+          content = classes.flat_map do |class_entity|
+            if class_entity.respond_to?(:render)
+              class_entity.render.map { |line| "  #{line}" }
+            else
+              ["  #{class_entity}"]
+            end
+          end
           lines = [] # : Array[String]
           lines << "#{indent_str}package #{name} {"
           lines.concat(content)

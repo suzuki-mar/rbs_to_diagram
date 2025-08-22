@@ -13,6 +13,8 @@ module Formatter
         @indentation: Formatter::Diagram::Indentation
         @entity_definition: EntityDefinition
 
+        def initialize: (indentation: Formatter::Diagram::Indentation) -> void
+
         private
 
         attr_reader indentation: Formatter::Diagram::Indentation

@@ -73,15 +73,14 @@ module Formatter
       
       interface _DiagramDetail
         def format: (_FormatterResult parser_result) -> String
-        def syntax: () -> _Syntax
+        def syntax: (?_FormatterResult?) -> _Syntax
         def entity_builder: (_FormatterResult parser_result, _NamespaceCollection namespace_collection) -> Hash[Symbol, Array[untyped]]
         def namespace_collection: (_FormatterResult parser_result) -> _NamespaceCollection
         def trailing_newline?: () -> bool
       end
       
       interface _Syntax
-        def initialize: (indentation: Indentation) -> void
-        def header: () -> String
+        def header: () -> (String | Array[String])
         def footer: () -> (String | nil)
         def class_definition: (String, Array[String]) -> Array[String]
         def module_definition: (String, Array[String]) -> Array[String]

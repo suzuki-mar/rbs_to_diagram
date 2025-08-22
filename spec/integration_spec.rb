@@ -33,6 +33,11 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
         'spec/fixtures/target/target_complex_single.rbs',
         'spec/output/target_complex_single.plantuml',
         'spec/fixtures/compare/complex_single.plantuml'
+      ],
+      [
+        'spec/fixtures/target/target_related_system.rbs',
+        'spec/output/target_related_system.plantuml',
+        'spec/fixtures/compare/related_system.plantuml'
       ]
     ]
   end

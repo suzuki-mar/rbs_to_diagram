@@ -16,8 +16,11 @@ module Formatter
         end
 
         def render
-          # ネームスペース内では使用されない（Namespaceエンティティが直接レンダリング）
-          raise NotImplementedError, 'NamespaceClass should not be rendered directly'
+          lines = [] # : Array[String]
+          lines << "class #{name} {"
+          lines.concat(methods.map(&:to_s))
+          lines << '}'
+          lines
         end
       end
     end
