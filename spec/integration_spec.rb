@@ -12,27 +12,27 @@ describe 'RBSファイルをパースして解析結果のファイル出力を�
       [
         'spec/fixtures/target/target_complex_single.rbs',
         'spec/output/target_complex_single.mermaid',
-        'spec/fixtures/compare/compare_complex_single.mermaid'
+        'spec/fixtures/compare/complex_single.mermaid'
       ],
       [
         'spec/fixtures/target/target_complex_single.rbs',
         'spec/output/target_complex_single.json',
-        'spec/fixtures/compare/compare_complex_single.json'
+        'spec/fixtures/compare/complex_single.json'
       ],
       [
         'spec/fixtures/target/target_related_system.rbs',
         'spec/output/target_related_system.mermaid',
-        'spec/fixtures/compare/compare_related_system.mermaid'
+        'spec/fixtures/compare/related_system.mermaid'
       ],
       [
         'spec/fixtures/target/target_related_system.rbs',
         'spec/output/target_related_system.json',
-        'spec/fixtures/compare/compare_related_system.json'
+        'spec/fixtures/compare/related_system.json'
       ],
       [
         'spec/fixtures/target/target_complex_single.rbs',
         'spec/output/target_complex_single.plantuml',
-        'spec/fixtures/compare/compare_complex_single.plantuml'
+        'spec/fixtures/compare/complex_single.plantuml'
       ]
     ]
   end
