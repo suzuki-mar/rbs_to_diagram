@@ -21,7 +21,8 @@ class RBSParser
               current_visibility = 'public'
             else
               method_signature = extract_signature(member, current_visibility)
-              methods << method_signature if method_signature
+              # デフォルトでprivateメソッドは除外
+              methods << method_signature if method_signature && current_visibility != 'private'
             end
           end
           methods
