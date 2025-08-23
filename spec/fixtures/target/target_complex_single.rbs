@@ -27,4 +27,14 @@ class ComprehensiveClass
 
   public
   def public_method: () -> String
+                   
+  class InnerClassMethod
+    def initialize: (String name) -> void
+    def self.execute: () -> String    
+  end
+
+  class InnerClassNormal
+    def initialize: (String name) -> void
+    def name: () -> String
+  end
 end

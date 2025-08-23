@@ -26,6 +26,8 @@ class RBSParser
     def self.translate_declarations: (Array[untyped] declarations) -> Array[Hash[Symbol, untyped]]
     def self.translate_single_declaration: (untyped decl) -> Hash[Symbol, untyped]?
     def self.extract_methods_from_members: (Array[untyped] members) -> Array[untyped]
+    def self.extract_inner_classes: (Array[untyped] members) -> Array[Hash[Symbol, untyped]]
+    def self.inner_class?: (Hash[Symbol, untyped] nested_definition, untyped parent_declaration) -> bool
 
     class ASTTranslator
       def self.translate_nested_declarations: (Array[untyped] members, String parent_name) -> Array[Hash[Symbol, untyped]]
