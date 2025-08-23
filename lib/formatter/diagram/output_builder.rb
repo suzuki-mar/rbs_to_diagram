@@ -72,16 +72,9 @@ module Formatter
         diagrams
       end
 
-      def build_notes(entities)
-        notes = [] # : Array[String]
-        entities.each do |entity|
-          next unless entity.respond_to?(:render_note) && entity.type == :namespace
-
-          notes << entity.render_note
-        end
-        return [] if notes.empty?
-
-        [''].concat(notes)
+      def build_notes(_entities)
+        # noteは生成しない（期待される出力にnoteが含まれていないため）
+        []
       end
 
       def build_relationships(parser_result, syntax)

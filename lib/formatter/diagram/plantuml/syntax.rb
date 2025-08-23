@@ -44,7 +44,6 @@ module Formatter
         safe_name = namespace_name.gsub(/\?$/, '')
         [
           "package #{safe_name} {",
-          '    note "Empty namespace" as N1',
           '}'
         ]
       end
@@ -56,16 +55,16 @@ module Formatter
 
       def inheritance_arrow(parent, child, label = nil)
         label_part = label ? " : #{label}" : ''
-        flat_parent = parent.gsub('::', '_').gsub(/\?$/, '')
-        flat_child = child.gsub('::', '_').gsub(/\?$/, '')
-        "#{flat_parent} <|-- #{flat_child}#{label_part}"
+        safe_parent = parent.gsub(/\?$/, '')
+        safe_child = child.gsub(/\?$/, '')
+        "#{safe_parent} <|-- #{safe_child}#{label_part}"
       end
 
       def delegation_arrow(delegator, delegatee, label = nil)
         label_part = label ? " : #{label}" : ''
-        flat_delegator = delegator.gsub('::', '_').gsub(/\?$/, '')
-        flat_delegatee = delegatee.gsub('::', '_').gsub(/\?$/, '')
-        "#{flat_delegator} --> #{flat_delegatee}#{label_part}"
+        safe_delegator = delegator.gsub(/\?$/, '')
+        safe_delegatee = delegatee.gsub(/\?$/, '')
+        "#{safe_delegator} --> #{safe_delegatee}#{label_part}"
       end
 
       def comment(text)

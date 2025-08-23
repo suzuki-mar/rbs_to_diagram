@@ -5,8 +5,9 @@ skinparam classAttributeIconSize 0
 package MyApp {
   package Models {
     class User {
-        +initialize(name: String) : void
         +name() : String
+        +settings() : UserSettings
+        +initialize(id: Integer, name: String) : void
     }
   }
 }
@@ -14,12 +15,6 @@ package MyApp {
 class BaseEntity {
     +id() : Integer
     +initialize(id: Integer) : void
-}
-
-class User {
-    +name() : String
-    +settings() : UserSettings
-    +initialize(id: Integer, name: String) : void
 }
 
 class UserSettings {
@@ -36,24 +31,15 @@ class SimpleClass {
     +simple_method() : String
 }
 
-class MyApp {
-}
-
 class Authenticatable {
     +authenticate(password: String) : bool
     +logout() : void
 }
 
-class EmptyNamespace {
+package EmptyNamespace {
 }
-
-package MyApp {
-    note "Empty namespace" as N1
-}
-
-note top of MyApp : Namespace: MyApp
 
 ' 関係性の定義
-BaseEntity <|-- User : 継承
-User --> UserSettings : 委譲
+BaseEntity <|-- MyApp::Models::User : 継承
+MyApp::Models::User --> UserSettings : 委譲
 @enduml

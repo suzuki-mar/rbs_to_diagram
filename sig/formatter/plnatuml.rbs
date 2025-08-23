@@ -217,11 +217,11 @@ module Formatter
       end
       
       class NamespaceCollectionSpec
-        def initialize: () -> void
-        def namespace_nodes: (_FormatterResult parser_result) -> Array[_Node]
-        def pick_namespace_for_class: (_Node class_node, Array[_Node] namespace_nodes) -> _Node?
-        def empty_namespaces: (_FormatterResult parser_result, Array[_Node] namespace_nodes, Hash[String, Array[_Node]] namespaces_with_classes) -> Array[_Node]
-        def regular_nodes: (_FormatterResult parser_result) -> Array[_Node]
+        include Formatter::Diagram::DiagramDetail::_NamespaceCollectionSpec
+
+        private
+
+        def select_namespace_modules: (Array[_Node] modules, Array[String] names) -> Array[_Node]
       end
 
     end
