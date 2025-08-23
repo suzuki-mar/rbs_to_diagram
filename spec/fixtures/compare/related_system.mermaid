@@ -1,20 +1,15 @@
 classDiagram
 namespace MyApp_Models {
     class User {
-        +initialize(name: String) void
         +name() String
+        +settings() UserSettings
+        +initialize(id: Integer, name: String) void
     }
 }
 
     class BaseEntity {
         +id() Integer
         +initialize(id: Integer) void
-    }
-
-    class User {
-        +name() String
-        +settings() UserSettings
-        +initialize(id: Integer, name: String) void
     }
 
     class UserSettings {
@@ -40,8 +35,6 @@ class EmptyNamespace {
     <<namespace>>
 }
 
-note for MyApp_Models "Namespace: MyApp::Models"
-
     %% 関係性の定義
-    BaseEntity <|-- User : "継承"
-    User --> UserSettings : "委譲"
+    BaseEntity <|-- MyApp_Models_User : "継承"
+    MyApp_Models_User --> UserSettings : "委譲"

@@ -27,6 +27,7 @@ interface _Node
   def relationships: () -> Array[Result::RelationshipNode]
   def includes: () -> Array[String]
   def extends: () -> Array[String]
+  def respond_to?: (Symbol) -> bool
 end
 
 interface _ClassNode
@@ -69,6 +70,13 @@ module Formatter
         def empty_namespaces: () -> Array[untyped]
         def regular_nodes: () -> Array[untyped]
         def namespaces?: () -> bool
+      end
+
+      interface _NamespaceCollectionSpec
+        def namespace_nodes: (_FormatterResult parser_result) -> Array[_Node]
+        def pick_namespace_for_class: (_Node class_node, Array[_Node] namespace_nodes) -> _Node?
+        def empty_namespaces: (_FormatterResult parser_result, Array[_Node] namespace_nodes, Hash[String, Array[_Node]] namespaces_with_classes) -> Array[_Node]
+        def regular_nodes: (_FormatterResult parser_result) -> Array[_Node]
       end
       
       interface _DiagramDetail

@@ -3,9 +3,11 @@
 # ネームスペースとして使用されるmodule
 module MyApp
   module Models
-    class User
-      def initialize: (String name) -> void
-      def name: () -> String
+    class User < BaseEntity
+      attr_reader name: String
+      attr_reader settings: UserSettings
+      
+      def initialize: (id: Integer, name: String) -> void
     end
   end
 end
@@ -25,14 +27,6 @@ class BaseEntity
   attr_reader id: Integer
   
   def initialize: (id: Integer) -> void
-end
-
-# 継承クラス
-class User < BaseEntity
-  attr_reader name: String
-  attr_reader settings: UserSettings
-  
-  def initialize: (id: Integer, name: String) -> void
 end
 
 # 委譲先のクラス
