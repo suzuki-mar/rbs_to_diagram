@@ -458,7 +458,53 @@
         }
       ],
       "includes": [],
-      "extends": []
+      "extends": [],
+      "inner_classes": [
+        {
+          "name": "InnerClassMethod",
+          "type": "method",
+          "methods": [
+            {
+              "name": "initialize",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            },
+            {
+              "name": "execute",
+              "parameters": [],
+              "return_type": "String"
+            }
+          ]
+        },
+        {
+          "name": "InnerClassNormal",
+          "type": "normal",
+          "methods": [
+            {
+              "name": "initialize",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": "String",
+                  "kind": "required_positional"
+                }
+              ],
+              "return_type": "void"
+            },
+            {
+              "name": "name",
+              "parameters": [],
+              "return_type": "String"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

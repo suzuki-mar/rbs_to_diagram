@@ -2,9 +2,12 @@
 
 require 'json'
 require_relative '../parameter'
-require_relative 'json/definition'
+require_relative 'json/definition/base'
+require_relative 'json/definition/class'
+require_relative 'json/definition/module'
+require_relative 'json/definition/method'
+require_relative 'json/definition/inner_class'
 
-# JSONフォーマッター（コントロールオブジェクト）
 module Formatter
   class Json
     class << self
@@ -16,87 +19,44 @@ module Formatter
                                })
       end
 
-      def build_structure(parser_result)
-        # JSON出力では特定のノードのみを出力
-        filtered_nodes = filter_nodes_for_json(parser_result.find_nodes)
+      private
 
-        filtered_nodes.map do |node|
-          if node.is_a?(Result::ClassNode)
-            convert_class_definition_to_data(node).to_hash
+      def build_structure(parser_result)
+        parser_result.find_nodes.map do |node|
+          if node.is_a?(Result::NodeEntity::Class)
+            Formatter::Json::Definition::Class.build(node).to_hash
           else
-            convert_module_definition_to_data(node).to_hash
+            Formatter::Json::Definition::Module.build(node).to_hash
           end
         end
       end
+    end
 
-      def filter_nodes_for_json(nodes)
-        # 全ての構造体を含める（フィルタリングしない）
-        nodes
+    class Parameter
+      attr_reader :type, :name, :superclass, :methods, :includes, :extends, :inner_classes, :is_namespace, :parameters,
+                  :return_type, :method_type, :visibility, :overloads, :block
+
+      # パラメータークラスなのとキーワード引数を使用しているため、パラメーターの数が多くてもよい
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(type: nil, name: nil, superclass: nil, methods: nil, includes: nil, extends: nil,
+                     inner_classes: nil, is_namespace: nil, parameters: nil, return_type: nil,
+                     method_type: nil, visibility: nil, overloads: nil, block: nil)
+        @type = type
+        @name = name
+        @superclass = superclass
+        @methods = methods
+        @includes = includes
+        @extends = extends
+        @inner_classes = inner_classes
+        @is_namespace = is_namespace
+        @parameters = parameters
+        @return_type = return_type
+        @method_type = method_type
+        @visibility = visibility
+        @overloads = overloads
+        @block = block
       end
-
-      def convert_module_definition_to_data(module_def)
-        methods = module_def.methods.map { |method| convert_method_to_data(method) }
-
-        Formatter::Json::JsonDefinition.new(
-          type: module_def.type,
-          name: module_def.name,
-          superclass: nil,
-          methods: methods,
-          includes: module_def.includes,
-          extends: module_def.extends,
-          is_namespace: module_def.is_namespace
-        )
-      end
-
-      def convert_class_definition_to_data(class_def)
-        methods = class_def.methods.map { |method| convert_method_to_data(method) }
-
-        Formatter::Json::JsonDefinition.new(
-          type: class_def.type,
-          name: class_def.name,
-          superclass: class_def.superclass,
-          methods: methods,
-          includes: class_def.includes,
-          extends: class_def.extends
-        )
-      end
-
-      def convert_method_to_data(method)
-        parameters = convert_parameters_to_definitions(method.parameters)
-
-        attributes = {
-          name: method.name,
-          method_type: method.method_type,
-          visibility: method.visibility,
-          parameters: parameters,
-          return_type: method.return_type,
-          overloads: method.overloads
-        }
-
-        block = method.block
-        if block
-          block_data = convert_block_to_data(block)
-          attributes = attributes.merge(block: block_data)
-        end
-
-        Formatter::Json::JsonDefinition.new(**attributes)
-      end
-
-      def convert_block_to_data(block)
-        parameters = convert_parameters_to_definitions(block.parameters)
-
-        Formatter::Json::JsonDefinition.new(
-          parameters: parameters,
-          return_type: block.return_type
-        )
-      end
-
-      def convert_parameters_to_definitions(parameters)
-        parameters.map do |param|
-          param_obj = param.is_a?(Parameter) ? param : Parameter.from_hash(param)
-          param_obj.to_hash
-        end
-      end
+      # rubocop:enable Metrics/ParameterLists
     end
   end
 end

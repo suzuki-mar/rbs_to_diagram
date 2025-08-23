@@ -6,7 +6,7 @@ interface _FormatterResultMethod
   def return_type: () -> String
   def parameters: () -> Array[Parameter]
   def overloads: () -> Array[Hash[Symbol, untyped]]
-  def block: () -> Result::BlockNode?
+  def block: () -> Result::NodeEntity::Block?
   def respond_to?: (Symbol | String) -> bool
   def to_s: () -> String
   def to_visibility_str: () -> String
@@ -24,7 +24,7 @@ interface _Node
   def is_namespace: () -> bool
   def methods_ordered_by_visibility_and_type: () -> Array[_FormatterResultMethod]
   def methods: () -> Array[_FormatterResultMethod]
-  def relationships: () -> Array[Result::RelationshipNode]
+  def relationships: () -> Array[Result::NodeEntity::Relationship]
   def includes: () -> Array[String]
   def extends: () -> Array[String]
   def respond_to?: (Symbol) -> bool
@@ -33,6 +33,7 @@ end
 interface _ClassNode
   include _Node
   def superclass: () -> String?
+  def inner_classes: () -> Array[Hash[Symbol, untyped]]
 end
 
 module Formatter
@@ -208,57 +209,150 @@ module Formatter
   class Json
     def self.format: (_FormatterResult parser_result) -> String
 
+    class Parameter
+      @type: untyped
+      @name: untyped
+      @superclass: untyped
+      @methods: untyped
+      @includes: untyped
+      @extends: untyped
+      @inner_classes: untyped
+      @is_namespace: untyped
+      @parameters: untyped
+      @return_type: untyped
+      @method_type: untyped
+      @visibility: untyped
+      @overloads: untyped
+      @block: untyped
+
+      def initialize: (
+        ?type: untyped,
+        ?name: untyped,
+        ?superclass: untyped,
+        ?methods: untyped,
+        ?includes: untyped,
+        ?extends: untyped,
+        ?inner_classes: untyped,
+        ?is_namespace: untyped,
+        ?parameters: untyped,
+        ?return_type: untyped,
+        ?method_type: untyped,
+        ?visibility: untyped,
+        ?overloads: untyped,
+        ?block: untyped
+      ) -> void
+
+      attr_reader type: untyped
+      attr_reader name: untyped
+      attr_reader superclass: untyped
+      attr_reader methods: untyped
+      attr_reader includes: untyped
+      attr_reader extends: untyped
+      attr_reader inner_classes: untyped
+      attr_reader is_namespace: untyped
+      attr_reader parameters: untyped
+      attr_reader return_type: untyped
+      attr_reader method_type: untyped
+      attr_reader visibility: untyped
+      attr_reader overloads: untyped
+      attr_reader block: untyped
+    end
+
     private
 
     def self.build_structure: (_FormatterResult parser_result) -> Array[Hash[Symbol, untyped]]
     def self.filter_nodes_for_json: (Array[_Node] nodes) -> Array[_Node]
-    def self.convert_class_definition_to_data: (_ClassNode class_def) -> Formatter::Json::JsonDefinition
-    def self.convert_module_definition_to_data: (_Node module_def) -> Formatter::Json::JsonDefinition
-    def self.convert_method_to_data: (_FormatterResultMethod method) -> Formatter::Json::JsonDefinition
-    def self.convert_block_to_data: (Result::BlockNode block) -> Formatter::Json::JsonDefinition
+    def self.convert_class_definition: (_ClassNode class_def) -> Formatter::Json::Definition::Class
+    def self.convert_module_definition: (_Node module_def) -> Formatter::Json::Definition::Module
+    def self.convert_method: (_FormatterResultMethod method) -> Formatter::Json::Definition::Method
+    def self.convert_block: (Result::NodeEntity::Block block) -> Hash[Symbol, untyped]
     def self.convert_parameters_to_definitions: (Array[Parameter | Hash[Symbol, String]] parameters) -> Array[{ kind: String, name: String, type: String }]
+    def self.convert_inner_class: (Hash[Symbol, untyped] inner_class) -> Formatter::Json::Definition::InnerClass
+    def self.convert_method_hash: (Hash[Symbol, untyped] method_hash) -> Formatter::Json::Definition::Method
+    def self.convert_block_hash: (Hash[Symbol, untyped] block_hash) -> Hash[Symbol, untyped]
 
-    class JsonDefinition
-      @type: (String | Symbol)?
-      @name: String?
-      @superclass: String?
-      @methods: Array[Formatter::Json::JsonDefinition]?
-      @includes: Array[String]?
-      @extends: Array[String]?
-      @method_type: String?
-      @visibility: String?
-      @parameters: Array[{ kind: String, name: String, type: String }]?
-      @return_type: String?
-      @overloads: Array[{ parameters: Array[{ kind: String, name: String, type: String }], return_type: String, block?: { parameters: Array[{ kind: String, name: String, type: String }], return_type: String } }]?
-      @block: Formatter::Json::JsonDefinition?
-      @kind: String?
-      @is_namespace: bool?
 
-      def initialize: (
-        ?type: (String | Symbol)?,
-        ?name: String?,
-        ?superclass: String?,
-        ?methods: Array[Formatter::Json::JsonDefinition]?,
-        ?includes: Array[String]?,
-        ?extends: Array[String]?,
-        ?method_type: String?,
-        ?visibility: String?,
-        ?parameters: Array[{ kind: String, name: String, type: String }]?,
-        ?return_type: String?,
-        ?overloads: Array[{ parameters: Array[{ kind: String, name: String, type: String }], return_type: String, block?: { parameters: Array[{ kind: String, name: String, type: String }], return_type: String } }]?,
-        ?block: Formatter::Json::JsonDefinition?,
-        ?kind: String?,
-        ?is_namespace: bool?
-      ) -> void
-      # untypedなのは固定した型を返すのではないため 
-      def to_hash: () -> Hash[Symbol, untyped]
+    module Definition
+      class Base
+        def to_hash: () -> Hash[Symbol, untyped]
 
-      private
-      # untypedなのは固定した型を返すのではないため   
-      def should_output_to_json?: (Symbol key, untyped value) -> bool
-      
-      # untypedなのは固定した型を返すのではないため
-      def convert_value_for_hash: (untyped value) -> untyped
+        private
+
+        def should_output_to_json?: (Symbol key, untyped value) -> bool
+        def convert_value_for_hash: (untyped value) -> untyped
+      end
+
+      class Class < Base
+        @parameter: Formatter::Json::Parameter
+        @type: (String | Symbol)
+        @name: String
+        @superclass: String?
+        @methods: Array[Formatter::Json::Definition::Method]
+        @includes: Array[String]
+        @extends: Array[String]
+        @inner_classes: Array[Formatter::Json::Definition::InnerClass]?
+
+        def initialize: (Formatter::Json::Parameter parameter) -> void
+
+        private
+
+        def should_output_to_json?: (Symbol key, untyped value) -> bool
+        def self.build: (untyped class_def) -> Class
+      end
+
+      class Module < Base
+        @parameter: Formatter::Json::Parameter
+        @type: (String | Symbol)
+        @name: String
+        @superclass: nil
+        @methods: Array[Formatter::Json::Definition::Method]
+        @includes: Array[String]
+        @extends: Array[String]
+        @is_namespace: bool?
+
+        def initialize: (Formatter::Json::Parameter parameter) -> void
+
+        private
+
+        def should_output_to_json?: (Symbol key, untyped value) -> bool
+        def self.build: (untyped module_def) -> Module
+      end
+
+      class Method < Base
+        @parameter: Formatter::Json::Parameter
+        @name: String
+        @method_type: String?
+        @visibility: String?
+        @parameters: Array[{ kind: String, name: String, type: String }]
+        @return_type: String?
+        @overloads: untyped
+        @block: Hash[Symbol, untyped]?
+
+        def initialize: (Formatter::Json::Parameter parameter) -> void
+        def to_hash: (?simple: bool) -> Hash[Symbol, untyped]
+        attr_reader name: String
+        attr_reader parameters: Array[{ kind: String, name: String, type: String }]
+        attr_reader return_type: String?
+        def self.build: (untyped method) -> Method
+        def self.build_from_hash: (Hash[Symbol, untyped] method_hash) -> Method
+        def self.convert_parameters_to_definitions: (untyped parameters) -> untyped
+        def self.convert_block: (untyped block) -> untyped
+        def self.convert_block_hash: (untyped block_hash) -> untyped
+      end
+
+      class InnerClass < Base
+        @parameter: Formatter::Json::Parameter
+        @name: String
+        @type: String
+        @methods: Array[Formatter::Json::Definition::Method]
+
+        def initialize: (Formatter::Json::Parameter parameter) -> void
+        def to_hash: () -> Hash[Symbol, untyped]
+        attr_reader name: String
+        attr_reader type: String
+        attr_reader methods: Array[Formatter::Json::Definition::Method]
+        def self.build: (untyped inner_class) -> InnerClass
+      end
     end
   end
 end

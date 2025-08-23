@@ -21,6 +21,11 @@ Metrics/MethodLength:
 Style/ClassAndModuleChildren:  
   Enabled: false
 
+# 必ずしも親クラスのメソッドを呼ぶ必要はないため
+# 親クラスのメソッドを呼ばないといけない場合は実装ができないのでチェックをする必要がない
+Lint/MissingSuper:
+  Enabled: false
+
 ######################################
 # 学習テストのため警告をオフにしている
 ######################################
