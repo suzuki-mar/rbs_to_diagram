@@ -8,9 +8,12 @@ require_relative 'plantuml/entity/module_as_class_entity'
 require_relative 'plantuml/entity/namespace'
 require_relative 'plantuml/entity/namespace_class'
 require_relative 'plantuml/entity/empty_namespace'
+require_relative 'plantuml/entity/method_class_entity'
+require_relative 'plantuml/entity/inner_class_entity'
 require_relative 'plantuml/entity_builder/regular_entities'
 require_relative 'plantuml/entity_builder/namespace_entities'
 require_relative 'plantuml/entity_builder/empty_namespace_entities'
+require_relative 'plantuml/entity_builder/inner_class_entities'
 require_relative 'namespace_collection'
 require_relative 'plantuml/namespace_collection_spec'
 
@@ -40,7 +43,8 @@ module Formatter
           regular_entities: EntityBuilder::RegularEntities.build(parser_result, plantuml_namespace_collection,
                                                                  plantuml_syntax, indentation),
           empty_namespace_entities: EntityBuilder::EmptyNamespaceEntities.build(plantuml_namespace_collection,
-                                                                                plantuml_syntax, indentation)
+                                                                                plantuml_syntax, indentation),
+          inner_class_entities: EntityBuilder::InnerClassEntities.build(parser_result, plantuml_syntax, indentation)
         }
       end
 
@@ -50,7 +54,7 @@ module Formatter
       end
 
       def trailing_newline?
-        true
+        false
       end
 
       private

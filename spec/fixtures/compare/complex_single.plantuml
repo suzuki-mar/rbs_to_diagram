@@ -15,5 +15,14 @@ class ComprehensiveClass {
     +generic_return(value: T) : Array[T]
     +void_method(message: String) : void
     +public_method() : String
+    +InnerClassMethod(): String
 }
+
+package ComprehensiveClassInner {
+    class InnerClassNormal {
+        +initialize(name: String) : void
+        +name() : String
+    }
+}
+
 @enduml

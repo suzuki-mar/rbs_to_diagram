@@ -5,12 +5,13 @@ module Formatter
     module Definition
       class InnerClass < Base
         def self.build(inner_class)
-          methods = inner_class[:methods].map { |method| Method.build_from_hash(method) }
-          inner_class_node = Result::NodeBuilder.build_inner_class_node(inner_class)
-          type = inner_class_node.inner_class_type
+          methods = inner_class.methods.map { |method| Method.build(method) }
+          type = inner_class.inner_class_type
+          # 完全名から短い名前を抽出
+          short_name = inner_class.name.split('::').last
 
           parameter = Formatter::Json::Parameter.new(
-            name: inner_class[:name],
+            name: short_name,
             type: type,
             methods: methods
           )

@@ -28,12 +28,17 @@ interface _Node
   def includes: () -> Array[String]
   def extends: () -> Array[String]
   def respond_to?: (Symbol) -> bool
+  def inner_classes: () -> Array[Result::NodeEntity::InnerClass]
+end
+
+interface _InnerClassNode
+  include _Node
+  def inner_class_type: () -> String
 end
 
 interface _ClassNode
   include _Node
   def superclass: () -> String?
-  def inner_classes: () -> Array[Hash[Symbol, untyped]]
 end
 
 module Formatter
@@ -63,13 +68,13 @@ module Formatter
     end
     module DiagramDetail
       interface _EntityBuilder
-        def build_entities: () -> Hash[Symbol, Array[untyped]]
+        def build_entities: () -> Hash[Symbol, Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]]
       end
       
       interface _NamespaceCollection
-        def collect_namespaces_with_classes: () -> Hash[String, Array[untyped]]
-        def empty_namespaces: () -> Array[untyped]
-        def regular_nodes: () -> Array[untyped]
+        def collect_namespaces_with_classes: () -> Hash[String, Array[_Node]]
+        def empty_namespaces: () -> Array[_Node]
+        def regular_nodes: () -> Array[_Node]
         def namespaces?: () -> bool
       end
 
@@ -83,7 +88,7 @@ module Formatter
       interface _DiagramDetail
         def format: (_FormatterResult parser_result) -> String
         def syntax: (?_FormatterResult?) -> _Syntax
-        def entity_builder: (_FormatterResult parser_result, _NamespaceCollection namespace_collection) -> Hash[Symbol, Array[untyped]]
+        def entity_builder: (_FormatterResult parser_result, _NamespaceCollection namespace_collection) -> Hash[Symbol, Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]]
         def namespace_collection: (_FormatterResult parser_result) -> _NamespaceCollection
         def trailing_newline?: () -> bool
       end
@@ -99,9 +104,9 @@ module Formatter
         def inheritance_arrow: (String, String, ?String?) -> String
         def delegation_arrow: (String, String, ?String?) -> String
         def comment: (String) -> String
-        def method_signatures: (Array[untyped]) -> Array[String]
+        def method_signatures: (Array[_FormatterResultMethod]) -> Array[String]
         def method_signature: (visibility: String, static: bool, name: String, params: Array[String], block: String, return_type: String) -> String
-        def build_relationships: (Array[untyped]) -> Array[String]
+        def build_relationships: (Array[Result::NodeEntity::Relationship]) -> Array[String]
       end
     end
   end
@@ -128,8 +133,8 @@ module Formatter
     attr_reader parser_result: _FormatterResult
 
     def prepare_diagram_context: (_FormatterResult parser_result) -> Hash[Symbol, untyped]
-    def merge_entities_in_order: (Hash[Symbol, Array[untyped]] entity_hash) -> Array[untyped]
-    def namespaces?: (Array[untyped] entities, Array[Symbol] namespace_entity_types) -> bool
+    def merge_entities_in_order: (Hash[Symbol, Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]] entity_hash) -> Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]
+    def namespaces?: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities, Array[Symbol] namespace_entity_types) -> bool
 
     class OutputBuilder
       def self.execute: (Hash[Symbol, untyped]) -> Array[String]
@@ -145,7 +150,7 @@ module Formatter
       attr_reader diagram_context: Hash[Symbol, untyped]
       attr_reader output: Array[String]
 
-      def self.build_class_diagrams_and_notes: (Array[untyped] entities, untyped syntax, Array[Symbol] namespace_entity_types) -> Hash[Symbol, Array[String]]
+      def self.build_class_diagrams_and_notes: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities, untyped syntax, Array[Symbol] namespace_entity_types) -> Hash[Symbol, Array[String]]
       def self.build_relationships: (_FormatterResult parser_result, untyped syntax) -> Array[String]
       
       def add_header_to_output: () -> void
@@ -156,28 +161,30 @@ module Formatter
       def build_header: (untyped syntax) -> Array[String]
       def build_footer: (untyped syntax) -> Array[String]
       def build_diagrams: (Hash[Symbol, untyped] diagram_context, untyped syntax) -> Array[String]
-      def build_notes: (Array[untyped] entities) -> Array[String]
+      def build_notes: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities) -> Array[String]
       def build_relationships: (_FormatterResult parser_result, untyped syntax) -> Array[String]
       def compact_blank_lines: () -> Array[String]
       def filter_blank_lines_with_namespace_rule?: (Integer index) -> bool
 
       class ClassDiagramsBuilder
-        def self.execute: (Array[untyped] entities, untyped syntax, Array[Symbol]? namespace_entity_types) -> Array[String]
+        def self.execute: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities, untyped syntax, Array[Symbol]? namespace_entity_types) -> Array[String]
 
-        def initialize: (Array[untyped] entities, untyped syntax, Array[Symbol]? namespace_entity_types) -> void
+        def initialize: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities, untyped syntax, Array[Symbol]? namespace_entity_types) -> void
         def execute: () -> Array[String]
 
         private
-        def build_entity_diagram_parts: (entity: untyped, has_namespaces: bool, non_empty_entities: Array[untyped], index: Integer) -> Array[String]
-        def namespace_exists?: (Array[untyped] entities, Array[Symbol] namespace_entity_types) -> bool
+        def build_entity_diagram_parts: (entity: Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base, has_namespaces: bool, non_empty_entities: Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base], index: Integer) -> Array[String]
+        def needs_trailing_blank_line?: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] non_empty_entities) -> bool
+        def select_non_empty_entities: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities) -> Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]
+        def namespace_exists?: (Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base] entities, Array[Symbol] namespace_entity_types) -> bool
         def build_rendered_diagrams: (untyped entity, untyped syntax, bool has_namespaces, Array[Symbol] namespace_entity_types) -> Array[String]
         def separator_required?: (untyped current_entity, untyped next_entity) -> bool
 
-        @entities: Array[untyped]
+        @entities: Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]
         @syntax: untyped
         @namespace_entity_types: Array[Symbol]?
 
-        attr_reader entities: Array[untyped]
+        attr_reader entities: Array[Formatter::Diagram::PlantUML::Entity::Base | Formatter::Diagram::MermaidJS::Entity::Base]
         attr_reader syntax: untyped
         attr_reader namespace_entity_types: Array[Symbol]?
       end

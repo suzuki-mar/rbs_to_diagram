@@ -30,9 +30,13 @@ class Result
 
     attr_reader :node
 
+    # newを外部クラスから禁止しているので実質privateメソッド
     public
 
     def add_inheritance
+      # Moduleノードには継承関係がないため、ClassまたはInnerClassのみ処理
+      return unless node.is_a?(Result::NodeEntity::Class) || node.is_a?(Result::NodeEntity::InnerClass)
+
       superclass = node.superclass
       return unless superclass
 
@@ -46,17 +50,16 @@ class Result
     end
 
     def add_delegation
+      # Moduleノードには委譲関係がないため、ClassまたはInnerClassのみ処理
+      return unless node.is_a?(Result::NodeEntity::Class) || node.is_a?(Result::NodeEntity::InnerClass)
+
       node.methods.each do |method|
         next unless method.parameters.empty?
         next if builtin_class?(method.return_type)
 
-        delegation_node = Result::NodeEntity::Relationship.new(
-          name: "#{node.name}_to_#{method.return_type}",
-          relationship_type: :delegation,
-          from: node.name,
-          to: method.return_type
+        node.add_relationship(
+          build_relationship_node_for_delegate(method)
         )
-        node.add_relationship(delegation_node)
       end
     end
 
@@ -101,6 +104,18 @@ class Result
       return true if regex_patterns.any? { |r| type_name.match?(r) }
 
       false
+    end
+
+    # add_inheritanceとかのこのクラスにおけるpublicメソッドないからしか呼ばれないもの
+    private
+
+    def build_relationship_node_for_delegate(method)
+      Result::NodeEntity::Relationship.new(
+        name: "#{node.name}_to_#{method.return_type}",
+        relationship_type: :delegation,
+        from: node.name,
+        to: method.return_type
+      )
     end
   end
 end

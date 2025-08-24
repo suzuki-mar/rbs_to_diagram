@@ -1,10 +1,32 @@
 module Formatter
   class Diagram
-    class PlantUML
-      include Formatter::Diagram::DiagramDetail::_DiagramDetail
-      @diagram_formatter: Formatter::Diagram
+          class PlantUML
+        include Formatter::Diagram::DiagramDetail::_DiagramDetail
+        @diagram_formatter: Formatter::Diagram
 
-      def check_has_namespaces: (_FormatterResult parser_result) -> bool
+        def check_has_namespaces: (_FormatterResult parser_result) -> bool
+
+        class EntityParam
+          @name: String
+          @package_name: String?
+          @methods: Array[String]
+          @method_classes: Array[Formatter::Diagram::PlantUML::Entity::MethodClassEntity]
+          @method_signature: String?
+          @syntax: Syntax
+          @indentation: Formatter::Diagram::Indentation
+          @indent: bool
+
+          attr_reader name: String
+          attr_reader package_name: String?
+          attr_reader methods: Array[String]
+          attr_reader method_classes: Array[Formatter::Diagram::PlantUML::Entity::MethodClassEntity]
+          attr_reader method_signature: String?
+          attr_reader syntax: Syntax
+          attr_reader indentation: Formatter::Diagram::Indentation
+          attr_reader indent: bool
+
+          def initialize: (name: String, syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?package_name: String?, ?methods: Array[String], ?method_classes: Array[Formatter::Diagram::PlantUML::Entity::MethodClassEntity], ?method_signature: String?, ?indent: bool) -> void
+        end
 
       private
 
@@ -43,6 +65,16 @@ module Formatter
       end
 
       class EntityBuilder
+        class InnerClassEntities
+          def self.build: (untyped parser_result, untyped syntax, untyped indentation) -> Array[Formatter::Diagram::PlantUML::Entity::InnerClassEntity]
+
+          private
+
+          def self.create_inner_class_entity: (untyped node, untyped syntax, untyped indentation) -> untyped
+          def self.create_normal_inner_class_entity: (untyped node, untyped syntax, untyped indentation) -> untyped
+          def self.collect_method_class_entities: (untyped node, untyped syntax, untyped indentation) -> Array[Formatter::Diagram::PlantUML::Entity::MethodClassEntity]
+          def self.extract_parent_class_name: (String full_name) -> String
+        end
         include Formatter::Diagram::DiagramDetail::_EntityBuilder
         @parser_result: _FormatterResult
         @namespace_collection: ::Formatter::Diagram::NamespaceCollection
@@ -58,17 +90,24 @@ module Formatter
         attr_reader syntax: Syntax
         attr_reader indentation: Formatter::Diagram::Indentation
 
-        def build_namespace_entities_with_classes: () -> Array[untyped]
-        def build_regular_entities: () -> Array[untyped]
-        def build_empty_namespace_entities: () -> Array[untyped]
+        def build_namespace_entities_with_classes: () -> Array[Formatter::Diagram::PlantUML::Entity::Namespace]
+        def build_regular_entities: () -> Array[Formatter::Diagram::PlantUML::Entity::Base]
+        def build_empty_namespace_entities: () -> Array[Formatter::Diagram::PlantUML::Entity::EmptyNamespace]
         def create_entity_for_node: (_Node node, has_namespaces: bool) -> untyped
         
         class RegularEntities
-          def self.build: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+          def self.build: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[Formatter::Diagram::PlantUML::Entity::Base]
           
           private
           
-          def self.create_entity_for_node: (_Node node, has_namespaces: bool, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> untyped
+          def self.create_entity_for_node: ((_Node | _InnerClassNode) node, has_namespaces: bool, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> untyped
+          def self.build_class_entity: (node: _Node, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> Formatter::Diagram::PlantUML::Entity::ClassEntity
+          def self.build_module_entity: (node: _Node, has_namespaces: bool, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> (Formatter::Diagram::PlantUML::Entity::ModuleAsClassEntity | Formatter::Diagram::PlantUML::Entity::ModuleEntity)
+          def self.build_inner_class_entity: (node: _InnerClassNode, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> (Formatter::Diagram::PlantUML::Entity::InnerClassEntity | nil)
+          def self.build_class_methods_with_inner_classes: (node: _Node, syntax: Syntax) -> Array[String]
+          def self.build_inner_class_method_signature_if_applicable: (untyped inner_class_node) -> String?
+          def self.create_normal_inner_class_entity: (node: _Node, syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> Formatter::Diagram::PlantUML::Entity::InnerClassEntity
+          def self.extract_parent_class_name: (String full_name) -> String
         end
         
         class NamespaceEntities
@@ -76,10 +115,10 @@ module Formatter
           @syntax: Syntax
           @indentation: Formatter::Diagram::Indentation
 
-          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[Formatter::Diagram::PlantUML::Entity::Namespace]
           
           def initialize: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> void
-          def build: () -> Array[untyped]
+          def build: () -> Array[Formatter::Diagram::PlantUML::Entity::Namespace]
 
           private
 
@@ -87,9 +126,9 @@ module Formatter
           attr_reader syntax: Syntax
           attr_reader indentation: Formatter::Diagram::Indentation
 
-          def build_nested_namespace: (NamespaceName namespace_name, Array[untyped] classes) -> untyped
-          def build_class_entities: (Array[untyped] classes) -> Array[untyped]
-          def build_innermost_namespace: (Array[untyped] class_entities, NamespaceName namespace_name) -> untyped
+          def build_nested_namespace: (NamespaceName namespace_name, Array[_Node] classes) -> Formatter::Diagram::PlantUML::Entity::Namespace
+          def build_class_entities: (Array[_Node] classes) -> Array[Formatter::Diagram::PlantUML::Entity::NamespaceClass]
+          def build_innermost_namespace: (Array[Formatter::Diagram::PlantUML::Entity::NamespaceClass] class_entities, NamespaceName namespace_name) -> Formatter::Diagram::PlantUML::Entity::Namespace
           def build_namespace_hierarchy: (untyped innermost_namespace, Array[NamespaceName] ancestor_names) -> untyped
 
           class NamespaceName
@@ -107,7 +146,7 @@ module Formatter
         end
         
         class EmptyNamespaceEntities
-          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[untyped]
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax, Formatter::Diagram::Indentation indentation) -> Array[Formatter::Diagram::PlantUML::Entity::EmptyNamespace]
         end
       end
 
@@ -161,13 +200,15 @@ module Formatter
 
         class ClassEntity < Base
           include _EntityRender
-          @methods: Array[String]
-          @indent: bool
+          @param: EntityParam
 
-          attr_reader methods: Array[String]
-          attr_reader indent: bool
+          attr_reader param: EntityParam
+          def methods: () -> Array[String]
+          def indent: () -> bool
+          def syntax: () -> Syntax
+          def indentation: () -> Formatter::Diagram::Indentation
 
-          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?indent: bool) -> void          
+          def initialize: (EntityParam param) -> void          
         end
 
         class ModuleEntity < Base
@@ -183,25 +224,27 @@ module Formatter
 
         class ModuleAsClassEntity < Base
           include _EntityRender
-          @methods: Array[String]
-          @indent: bool
+          @param: EntityParam
 
-          attr_reader methods: Array[String]
-          attr_reader indent: bool
+          attr_reader param: EntityParam
+          def methods: () -> Array[String]
+          def indent: () -> bool
+          def syntax: () -> Syntax
+          def indentation: () -> Formatter::Diagram::Indentation
 
-          def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation, ?indent: bool) -> void
+          def initialize: (EntityParam param) -> void
 
         end
 
         class Namespace < Base
           include _EntityRender
           @original_name: String
-          @classes: Array[untyped]
+          @classes: Array[Formatter::Diagram::PlantUML::Entity::Base]
 
           attr_reader original_name: String
-          attr_reader classes: Array[untyped]
+          attr_reader classes: Array[Formatter::Diagram::PlantUML::Entity::Base]
 
-          def initialize: (name: String, original_name: String, classes: Array[untyped], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+          def initialize: (name: String, original_name: String, classes: Array[Formatter::Diagram::PlantUML::Entity::Base], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
 
           def render_note: () -> String
         end
@@ -213,6 +256,33 @@ module Formatter
           attr_reader methods: Array[String]
 
           def initialize: (name: String, methods: Array[String], syntax: Syntax, indentation: Formatter::Diagram::Indentation) -> void
+        end
+
+        class InnerClassEntity < Base
+          include _EntityRender
+          @param: EntityParam
+
+          attr_reader param: EntityParam
+          def package_name: () -> String?
+          def methods: () -> Array[String]
+          def method_classes: () -> Array[MethodClassEntity]
+          def syntax: () -> Syntax
+          def indentation: () -> Formatter::Diagram::Indentation
+
+          def initialize: (EntityParam param) -> void
+        end
+
+        class MethodClassEntity < Base
+          include _EntityRender
+          @param: EntityParam
+
+          attr_reader param: EntityParam
+          def method_signature: () -> String?
+          def syntax: () -> Syntax
+          def indentation: () -> Formatter::Diagram::Indentation
+
+          def initialize: (EntityParam param) -> void
+          def to_method_signature: () -> String
         end
       end
       

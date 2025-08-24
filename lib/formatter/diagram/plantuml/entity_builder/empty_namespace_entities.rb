@@ -4,7 +4,7 @@ module Formatter
   class Diagram::PlantUML::EntityBuilder
     class EmptyNamespaceEntities
       def self.build(namespace_collection, syntax, indentation)
-        entities = [] # : Array[untyped]
+        entities = [] # : Array[Formatter::Diagram::PlantUML::Entity::EmptyNamespace]
 
         empty_namespaces = namespace_collection.empty_namespaces
         empty_namespaces.each do |ns|
