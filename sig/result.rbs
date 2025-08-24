@@ -34,19 +34,18 @@ class Result
       @superclass: String?
       @includes: Array[String]
       @extends: Array[String]
-      @inner_classes: Array[Hash[Symbol, untyped]]
+      @inner_classes: Array[Result::NodeEntity::InnerClass]
 
       public
 
-      attr_reader inner_classes: Array[Hash[Symbol, untyped]]
-
       %a{override}
-      def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String], ?inner_classes: Array[Hash[Symbol, untyped]]) -> void
+      def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String], ?inner_classes: Array[Result::NodeEntity::InnerClass]) -> void
       def self.from_hash: (definition_hash class_def) -> Result::NodeEntity::Class
       def add_relationship: (Result::NodeEntity::Relationship relationship_node) -> void
 
       private
 
+      def self.build_inner_class_node: (Hash[Symbol, untyped] inner_class_hash, definition_hash class_def) -> Result::NodeEntity::InnerClass
       def extract_method_nodes: () -> Array[Result::NodeEntity::Method]
       def extract_relationship_nodes: () -> Array[Result::NodeEntity::Relationship]
       def select_methods_by_visibility_and_type: (Array[_FormatterResultMethod] methods, String visibility, String method_type) -> Array[_FormatterResultMethod]
@@ -54,7 +53,7 @@ class Result
 
     # インナークラスノード
     class InnerClass < Result::Node
-      include _ClassNode
+      include _InnerClassNode
 
       private
 
@@ -64,12 +63,13 @@ class Result
 
       public
 
+      attr_reader superclass: String?
+
       %a{override}
       def initialize: (name: String, ?superclass: String?, ?includes: Array[String], ?extends: Array[String]) -> void
       def self.from_hash: (Hash[Symbol, untyped] class_def) -> Result::NodeEntity::InnerClass
       def add_relationship: (Result::NodeEntity::Relationship relationship_node) -> void
       def method_class?: () -> bool
-      def inner_class_type: () -> String
 
       private
 
@@ -192,5 +192,6 @@ class Result
     attr_reader node: (Result::NodeEntity::Class | Result::NodeEntity::Module | Result::NodeEntity::InnerClass)
     
     def builtin_class?: (String type_name) -> bool
+    def build_relationship_node_for_delegate: (_FormatterResultMethod method) -> Result::NodeEntity::Relationship
   end
 end

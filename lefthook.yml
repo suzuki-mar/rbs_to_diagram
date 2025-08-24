@@ -10,3 +10,9 @@ pre-push:
     steep:
       run: bundle exec steep check
       fail_text: "Steep type checking failed"
+pre-commit:
+  parallel: true
+  commands:    
+    rspec:    
+      run: bundle exec rspec 
+      fail_text: "RSpec tests failed"    

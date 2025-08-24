@@ -16,13 +16,33 @@ class Result
       end
 
       def self.from_hash(class_def)
+        inner_classes = (class_def[:inner_classes] || []).map do |inner_class_hash|
+          build_inner_class_node(inner_class_hash, class_def)
+        end
+
         new(
           name: class_def[:name],
           superclass: class_def[:superclass],
           includes: class_def[:includes] || [],
           extends: class_def[:extends] || [],
-          inner_classes: class_def[:inner_classes] || []
+          inner_classes: inner_classes
         )
+      end
+
+      private_class_method def self.build_inner_class_node(inner_class_hash, class_def)
+        # 親クラス名を含めた完全な名前を作成
+        full_name = "#{class_def[:name]}::#{inner_class_hash[:name]}"
+        inner_class_hash_with_full_name = inner_class_hash.merge(name: full_name)
+
+        inner_class_node = Result::NodeEntity::InnerClass.from_hash(inner_class_hash_with_full_name)
+
+        # インナークラスにメソッドを追加
+        inner_class_hash[:methods]&.each do |method_hash|
+          method_node = Result::NodeEntity::Method.from_hash(method_hash)
+          inner_class_node.add_child(method_node)
+        end
+
+        inner_class_node
       end
 
       def methods

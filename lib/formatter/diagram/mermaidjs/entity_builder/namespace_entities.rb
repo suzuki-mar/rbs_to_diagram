@@ -5,7 +5,7 @@ module Formatter
     class NamespaceEntities
       class << self
         def build(namespace_collection, syntax)
-          entities = [] # : Array[untyped]
+          entities = [] # : Array[Formatter::Diagram::MermaidJS::Entity::Namespace]
 
           namespace_collection.collect_namespaces_with_classes.each do |namespace_name, classes|
             flattened_name = namespace_name.gsub('::', '_')

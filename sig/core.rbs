@@ -1,4 +1,13 @@
 
+# Forwardable module definition
+module Forwardable
+  def self.def_delegators: (untyped accessor, *Symbol methods) -> void
+end
+
+class Class
+  def def_delegators: (untyped accessor, *Symbol methods) -> void
+end
+
 # RBS to Diagram - パッケージ間インターフェース定義
 #
 # このファイルは各パッケージ間の契約を定義します。
@@ -49,6 +58,14 @@ class Result
   include _ParserResult
   include _FormatterResult
   
+  # RBS解析結果の型定義（実用的な柔軟性を保った定義）
+  type parameter_item = Hash[Symbol, untyped]
+  type method_hash = Hash[Symbol, untyped]
+  type overload_hash = Hash[Symbol, untyped]
+  type block_hash = Hash[Symbol, untyped]
+  type inner_class_hash = Hash[Symbol, untyped]
+  type class_definition_hash = Hash[Symbol, untyped]
+  type module_definition_hash = Hash[Symbol, untyped]
   type definition_hash = Hash[Symbol, untyped]
 
   def self.build: (Array[definition_hash] definitions) -> (_ParserResult | _FormatterResult)

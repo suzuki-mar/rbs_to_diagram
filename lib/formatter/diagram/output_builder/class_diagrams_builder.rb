@@ -22,13 +22,16 @@ module Formatter
           has_namespaces = namespace_exists?(entities, namespace_types)
 
           diagrams = [] # : Array[String]
-          non_empty_entities = entities.reject { |e| e.is_a?(String) && e.empty? }
+          non_empty_entities = select_non_empty_entities(entities)
 
           # builder系のメソッドに分ける
           non_empty_entities.each_with_index do |entity, index|
             diagrams.concat(build_entity_diagram_parts(entity: entity, has_namespaces: has_namespaces,
                                                        non_empty_entities: non_empty_entities, index: index))
           end
+
+          diagrams << '' if needs_trailing_blank_line?(non_empty_entities)
+
           diagrams
         end
 
@@ -51,6 +54,14 @@ module Formatter
 
             parts
           end
+        end
+
+        def needs_trailing_blank_line?(non_empty_entities)
+          syntax.class.name.include?('PlantUML') && !non_empty_entities.empty?
+        end
+
+        def select_non_empty_entities(entities)
+          entities.reject { |e| e.is_a?(String) && e.empty? }
         end
 
         def namespace_exists?(entities, namespace_entity_types)

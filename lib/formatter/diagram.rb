@@ -63,8 +63,7 @@ module Formatter
     end
 
     def merge_entities_in_order(entity_hash)
-      # :return Array[untyped]
-      buckets = %i[namespace_entities regular_entities empty_namespace_entities]
+      buckets = %i[namespace_entities regular_entities empty_namespace_entities inner_class_entities]
 
       buckets.each_with_object([]) do |key, acc|
         list = Array(entity_hash[key]) # nil 安全化

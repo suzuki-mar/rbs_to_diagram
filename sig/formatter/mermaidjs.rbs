@@ -50,13 +50,13 @@ module Formatter
         attr_reader namespace_collection: Formatter::Diagram::NamespaceCollection
         attr_reader syntax: Syntax
 
-        def build_namespace_entities_with_classes: () -> Array[untyped]
-        def build_regular_entities: () -> Array[untyped]
-        def build_empty_namespace_entities: () -> Array[untyped]
+        def build_namespace_entities_with_classes: () -> Array[Formatter::Diagram::MermaidJS::Entity::Namespace]
+        def build_regular_entities: () -> Array[Formatter::Diagram::MermaidJS::Entity::Base]
+        def build_empty_namespace_entities: () -> Array[Formatter::Diagram::MermaidJS::Entity::EmptyNamespace]
         def create_entity_for_node: (_Node node, has_namespaces: bool) -> untyped
         
         class RegularEntities
-          def self.build: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[untyped]
+          def self.build: (_FormatterResult parser_result, Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[Formatter::Diagram::MermaidJS::Entity::Base]
           
           private
           
@@ -67,15 +67,15 @@ module Formatter
         end
         
         class NamespaceEntities
-          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[untyped]
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[Formatter::Diagram::MermaidJS::Entity::Namespace]
           
           private
           
-          def self.build_class_entities: (Array[_Node] classes, Syntax syntax) -> Array[untyped]
+          def self.build_class_entities: (Array[_Node] classes, Syntax syntax) -> Array[Formatter::Diagram::MermaidJS::Entity::NamespaceClass]
         end
         
         class EmptyNamespaceEntities
-          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[untyped]
+          def self.build: (Formatter::Diagram::NamespaceCollection namespace_collection, Syntax syntax) -> Array[Formatter::Diagram::MermaidJS::Entity::EmptyNamespace]
         end
       end
 

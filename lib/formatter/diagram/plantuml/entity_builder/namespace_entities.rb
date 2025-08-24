@@ -16,7 +16,7 @@ module Formatter
       end
 
       def build
-        entities = [] # : Array[untyped]
+        entities = [] # : Array[Formatter::Diagram::PlantUML::Entity::Namespace]
 
         namespace_collection.collect_namespaces_with_classes.each do |namespace_name_str, classes|
           namespace_name = NamespaceName.new(namespace_name_str)

@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 require_relative 'base'
-require_relative '../../indentation'
+require_relative '../entity_param'
 
 module Formatter
   class Diagram::PlantUML
     module Entity
       class ModuleAsClassEntity < Base
-        private attr_reader :methods, :indent, :syntax, :indentation
+        extend Forwardable
 
-        def initialize(name:, methods:, syntax:, indentation:, indent: true)
-          super(name: name, type: :module_as_class, syntax: syntax, indentation: indentation)
-          @methods = methods
-          @indent = indent
+        private attr_reader :param
+
+        def_delegators :@param, :methods, :indent, :syntax, :indentation
+
+        def initialize(param)
+          super(name: param.name, type: :module_as_class, syntax: param.syntax, indentation: param.indentation)
+          @param = param
         end
 
         def render

@@ -5,7 +5,7 @@ module Formatter
     class RegularEntities
       class << self
         def build(parser_result, namespace_collection, syntax)
-          entities = [] # : Array[untyped]
+          entities = [] # : Array[Formatter::Diagram::MermaidJS::Entity::Base]
 
           namespace_class_names = namespace_collection.collect_namespaces_with_classes.values.flatten.to_set(&:name)
           namespace_collection.collect_namespaces_with_classes.keys.to_set

@@ -4,7 +4,7 @@ module Formatter
   class Diagram::MermaidJS::EntityBuilder
     class EmptyNamespaceEntities
       def self.build(namespace_collection, syntax)
-        entities = [] # : Array[untyped]
+        entities = [] # : Array[Formatter::Diagram::MermaidJS::Entity::EmptyNamespace]
 
         namespace_collection.empty_namespaces.each do |ns|
           flattened_name = ns.name.gsub('::', '.')
